@@ -144,6 +144,7 @@ private:
     bool has_acked_ = false;
 
     std::unordered_map<EntityId, f32> priority_;
+    std::vector<u64> gather_;
     std::vector<EntityWireState> scratch_current_;
     std::vector<const EntityWireState*> previous_;
     std::vector<Candidate> candidates_;

@@ -80,21 +80,26 @@ u32 ReplicationState::encode(const World& world, EntityId viewer, u32 last_input
     const Vec2 eye = entities.position[static_cast<u32>(viewer_index)];
     const f32 aoi_sq = config_.aoi_radius * config_.aoi_radius;
 
-    scratch_current_.clear();
+    // Ordering by id happens on packed id:index keys rather than on wire states,
+    // so the sort moves 8 bytes per element and quantization runs once, in order.
+    gather_.clear();
     world.grid().query_radius(eye, config_.aoi_radius, [&](u32 index) {
         if (distance_sq(entities.position[index], eye) > aoi_sq) return;
-        EntityWireState state;
-        state.id = entities.id[index];
+        gather_.push_back((static_cast<u64>(entities.id[index]) << 32) | index);
+    });
+    std::sort(gather_.begin(), gather_.end());
+
+    scratch_current_.resize(gather_.size());
+    for (std::size_t i = 0; i < gather_.size(); ++i) {
+        u32 index = static_cast<u32>(gather_[i] & 0xffffffffull);
+        EntityWireState& state = scratch_current_[i];
+        state.id = static_cast<EntityId>(gather_[i] >> 32);
         state.px = static_cast<u16>(quantizers_.position.encode(entities.position[index].x));
         state.py = static_cast<u16>(quantizers_.position.encode(entities.position[index].y));
         state.vx = static_cast<u16>(quantizers_.velocity.encode(entities.velocity[index].x));
         state.vy = static_cast<u16>(quantizers_.velocity.encode(entities.velocity[index].y));
         state.kind = entities.kind[index];
-        scratch_current_.push_back(state);
-    });
-
-    std::sort(scratch_current_.begin(), scratch_current_.end(),
-              [](const EntityWireState& a, const EntityWireState& b) { return a.id < b.id; });
+    }
     stats_.relevant_entities = static_cast<u32>(scratch_current_.size());
 
     // A baseline old enough to share a ring slot with the frame about to be
