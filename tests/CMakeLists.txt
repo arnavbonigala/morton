@@ -12,3 +12,7 @@ morton_test(test_matchmaker test_matchmaker.cpp)
 morton_test(test_world_server test_world_server.cpp)
 morton_test(test_load test_load.cpp)
 morton_test(test_websocket test_websocket.cpp)
+
+# The load cases measure tick latency and rejoin timing, so they need the
+# machine to themselves rather than a share of it alongside other tests.
+set_tests_properties(test_load PROPERTIES RUN_SERIAL TRUE TIMEOUT 300)

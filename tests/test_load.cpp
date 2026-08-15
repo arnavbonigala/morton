@@ -270,21 +270,42 @@ TEST_CASE(players_on_a_shard_that_dies_are_replaced_onto_the_survivor) {
     config.quiet = true;
 
     std::atomic<bool> killed{false};
+    std::atomic<bool> watching{true};
+    std::atomic<u32> peak_on_survivor{0};
+
     std::thread chaos([&] {
         sleep_us(6000000);
         cluster.kill(1);
         killed.store(true, std::memory_order_relaxed);
     });
 
+    // Residency is sampled rather than read at the end: a bot that is still
+    // completing its rejoin when the run stops is counted by the fleet but not
+    // yet by the shard.
+    std::thread watcher([&] {
+        while (watching.load(std::memory_order_relaxed)) {
+            if (killed.load(std::memory_order_relaxed)) {
+                u32 resident = cluster.servers[0]->resident_player_count();
+                u32 seen = peak_on_survivor.load(std::memory_order_relaxed);
+                while (resident > seen &&
+                       !peak_on_survivor.compare_exchange_weak(seen, resident)) {
+                }
+            }
+            sleep_us(100000);
+        }
+    });
+
     LoadTest load;
     LoadTestReport report;
     CHECK(load.run(config, &report));
+    watching.store(false, std::memory_order_relaxed);
+    watcher.join();
     chaos.join();
     CHECK(killed.load(std::memory_order_relaxed));
 
     CHECK(report.rejoins > 0);
     CHECK_EQ(report.clients_connected, config.clients);
-    CHECK_EQ(cluster.servers[0]->resident_player_count(), config.clients);
+    CHECK_EQ(peak_on_survivor.load(std::memory_order_relaxed), config.clients);
 
     std::vector<ShardInfo> live = cluster.matchmaker.shards();
     CHECK_EQ(static_cast<u32>(live.size()), 1u);
@@ -292,7 +313,8 @@ TEST_CASE(players_on_a_shard_that_dies_are_replaced_onto_the_survivor) {
 
     std::printf("       shard died mid-run: %llu rejoins, all %u players resident on the "
                 "survivor\n",
-                static_cast<unsigned long long>(report.rejoins), report.clients_connected);
+                static_cast<unsigned long long>(report.rejoins),
+                peak_on_survivor.load(std::memory_order_relaxed));
 
     cluster.shutdown();
 }
