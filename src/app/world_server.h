@@ -194,6 +194,7 @@ private:
     Counter* receive_drops_counter_ = nullptr;
     u64 last_receive_drops_ = 0;
     Gauge* players_gauge_ = nullptr;
+    Gauge* redirecting_gauge_ = nullptr;
     Gauge* entities_gauge_ = nullptr;
 };
 

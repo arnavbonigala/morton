@@ -57,7 +57,9 @@ bool WorldServer::start(const WorldServerConfig& config) {
         metrics.counter("morton_send_failures_total", "datagrams the kernel refused");
     receive_drops_counter_ = metrics.counter("morton_receive_drops_total",
                                              "datagrams dropped by a full receive queue");
-    players_gauge_ = metrics.gauge("morton_players", "connected players");
+    players_gauge_ = metrics.gauge("morton_players", "players resident on this shard");
+    redirecting_gauge_ =
+        metrics.gauge("morton_players_redirecting", "players handed off but not yet gone");
     entities_gauge_ = metrics.gauge("morton_entities", "simulated entities");
 
     ServerConfig server;
@@ -573,7 +575,14 @@ void WorldServer::tick(u64 now) {
     u64 receive_drops = connections_.socket().receive_drops();
     if (receive_drops_counter_) receive_drops_counter_->add(receive_drops - last_receive_drops_);
     last_receive_drops_ = receive_drops;
-    if (players_gauge_) players_gauge_->set(static_cast<f64>(players_.size()));
+    // A redirected player's presence already names the destination, so counting
+    // it here too makes the fleet look larger than it is: at a hundred clients
+    // the four shards summed to a hundred and twenty five.
+    u32 resident = resident_player_count();
+    if (players_gauge_) players_gauge_->set(static_cast<f64>(resident));
+    if (redirecting_gauge_) {
+        redirecting_gauge_->set(static_cast<f64>(players_.size() - resident));
+    }
     if (entities_gauge_) entities_gauge_->set(static_cast<f64>(world_.entities().size()));
 }
 
@@ -655,7 +664,7 @@ std::string WorldServer::state_json() const {
         if (i > 0) out += ",";
         out += std::to_string(owned[i]);
     }
-    out += "],\"players\":" + std::to_string(players_.size()) +
+    out += "],\"players\":" + std::to_string(resident_player_count()) +
            ",\"viewers\":" + std::to_string(viewer_.client_count()) +
            ",\"tick_p99_ms\":" + number(tick_p99_ms()) + "}";
     return out;
