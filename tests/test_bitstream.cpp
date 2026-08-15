@@ -135,4 +135,42 @@ TEST_CASE(string_and_bytes_roundtrip) {
     for (int i = 0; i < 16; ++i) CHECK_EQ(out[i], token[i]);
 }
 
+TEST_CASE(byte_aligned_payloads_survive_bits_written_around_them) {
+    u8 payload[300];
+    for (u32 i = 0; i < sizeof(payload); ++i) payload[i] = static_cast<u8>(i * 7 + 3);
+
+    u8 buffer[512];
+    BitWriter writer(buffer, sizeof(buffer));
+    writer.write_u16(0xbeef);
+    writer.write_bytes(payload, sizeof(payload));
+    CHECK_EQ(writer.bytes_written(), 302u);
+    writer.write_bits(0x5, 3);
+    writer.write_u32(0xdeadbeef);
+    CHECK_EQ(writer.bytes_written(), 307u);
+
+    BitReader reader(buffer, writer.bytes_written());
+    CHECK_EQ(reader.read_u16(), 0xbeefu);
+    u8 out[300] = {};
+    reader.read_bytes(out, sizeof(out));
+    for (u32 i = 0; i < sizeof(payload); ++i) CHECK_EQ(out[i], payload[i]);
+    CHECK_EQ(reader.read_bits(3), 0x5u);
+    CHECK_EQ(reader.read_u32(), 0xdeadbeefu);
+    CHECK(!reader.overflowed());
+}
+
+TEST_CASE(a_payload_past_the_end_overflows_rather_than_writing_out_of_bounds) {
+    u8 payload[64] = {};
+    u8 buffer[32];
+    BitWriter writer(buffer, sizeof(buffer));
+    writer.write_u16(1);
+    writer.write_bytes(payload, sizeof(payload));
+    CHECK(writer.overflowed());
+    CHECK_EQ(writer.bytes_written(), 2u);
+
+    BitReader reader(buffer, sizeof(buffer));
+    u8 out[64];
+    reader.read_bytes(out, sizeof(out));
+    CHECK(reader.overflowed());
+}
+
 TEST_MAIN()

@@ -68,7 +68,17 @@ public:
     }
 
     void write_bytes(const u8* data, u32 count) {
-        for (u32 i = 0; i < count; ++i) write_u8(data[i]);
+        if (pending_bits_ != 0) {
+            for (u32 i = 0; i < count; ++i) write_u8(data[i]);
+            return;
+        }
+        if (static_cast<u64>(bit_pos_) + static_cast<u64>(count) * 8 > capacity_bits_) {
+            overflow_ = true;
+            return;
+        }
+        std::memcpy(buffer_ + flushed_bytes_, data, count);
+        flushed_bytes_ += count;
+        bit_pos_ += count * 8;
     }
 
     void align() {
@@ -175,7 +185,16 @@ public:
     }
 
     void read_bytes(u8* out, u32 count) {
-        for (u32 i = 0; i < count; ++i) out[i] = read_u8();
+        if ((bit_pos_ & 7) != 0) {
+            for (u32 i = 0; i < count; ++i) out[i] = read_u8();
+            return;
+        }
+        if (static_cast<u64>(bit_pos_) + static_cast<u64>(count) * 8 > capacity_bits_) {
+            overflow_ = true;
+            return;
+        }
+        std::memcpy(out, buffer_ + (bit_pos_ >> 3), count);
+        bit_pos_ += count * 8;
     }
 
     void align() {
