@@ -1,5 +1,6 @@
 morton_test(test_bitstream test_bitstream.cpp)
 morton_test(test_reliability test_reliability.cpp)
+morton_test(test_udp_socket test_udp_socket.cpp)
 morton_test(test_connection test_connection.cpp)
 morton_test(test_spatial test_spatial.cpp)
 morton_test(test_world test_world.cpp)
