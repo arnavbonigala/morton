@@ -18,6 +18,13 @@ namespace morton_test {
 /// would only prove the stub matches the client's assumptions.
 class RedisFixture {
 public:
+    /// Brings the server back on the port it was already using, so clients that
+    /// cached the address see an outage rather than a moved endpoint.
+    bool restart() {
+        stop();
+        return spawn();
+    }
+
     bool start() {
         int probe = ::socket(AF_INET, SOCK_STREAM, 0);
         if (probe < 0) return false;
@@ -34,6 +41,10 @@ public:
         port_ = ntohs(sa.sin_port);
         ::close(probe);
 
+        return spawn();
+    }
+
+    bool spawn() {
         std::string port_text = std::to_string(port_);
         pid_ = ::fork();
         if (pid_ < 0) return false;
