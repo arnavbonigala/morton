@@ -10,6 +10,7 @@ themselves rather than from the client's view of them.
 import argparse
 import json
 import math
+import os
 import subprocess
 import sys
 import time
@@ -169,33 +170,40 @@ def main():
     compose("up", "-d", "redis", "matchmaker", *SHARDS)
     wait_for_cluster()
 
-    results = []
-    for fleet in [int(value) for value in args.fleets.split(",") if value]:
-        print(f"\n=== fleet of {fleet} clients ===", flush=True)
+    fleets = [int(value) for value in args.fleets.split(",") if value]
+    attempts = {fleet: [] for fleet in fleets}
 
-        # A single run is at the mercy of whatever else the host is doing, and a
-        # contended run reads as a capacity result rather than as noise, so each
-        # fleet is measured repeatedly and reported by its median tick cost.
-        attempts = []
-        for attempt in range(args.repeat):
+    # Host contention drifts over minutes, so measuring one fleet three times
+    # before starting the next confounds fleet size with whatever else the
+    # machine happened to be doing. Every round visits every fleet instead, and
+    # each run records the background load it started against.
+    for attempt in range(args.repeat):
+        for fleet in fleets:
             compose("restart", *SHARDS)
             wait_for_cluster()
             time.sleep(3)
+            load = round(os.getloadavg()[0], 2)
 
             client = run_fleet(fleet, args.threads, args.duration, args.ramp)
             shards = {name: shard_report(40081 + index) for index, name in enumerate(SHARDS)}
-            attempts.append(summarize(fleet, client, shards))
-            last = attempts[-1]
-            print(f"  run {attempt + 1}/{args.repeat}  "
-                  f"peak {last['client']['clients_peak_connected']}  "
-                  f"tick mean {last['tick_mean_ms']:.2f} ms  "
-                  f"p99 {last['worst_tick_p99_ms']:.2f} ms  "
-                  f"loss {last['client']['loss_mean_percent']:.2f}%", flush=True)
+            record = summarize(fleet, client, shards)
+            record["host_load"] = load
+            attempts[fleet].append(record)
+            print(f"  round {attempt + 1}/{args.repeat}  fleet {fleet}  "
+                  f"peak {record['client']['clients_peak_connected']}  "
+                  f"tick mean {record['tick_mean_ms']:.2f} ms  "
+                  f"p99 {record['worst_tick_p99_ms']:.2f} ms  "
+                  f"loss {record['client']['loss_mean_percent']:.2f}%  "
+                  f"host load {load}", flush=True)
 
-        attempts.sort(key=lambda run: run["tick_mean_ms"])
-        chosen = attempts[len(attempts) // 2]
-        chosen["tick_mean_ms_runs"] = [round(run["tick_mean_ms"], 3) for run in attempts]
-        spread = attempts[-1]["tick_mean_ms"] - attempts[0]["tick_mean_ms"]
+    results = []
+    for fleet in fleets:
+        print(f"\n=== fleet of {fleet} clients ===", flush=True)
+        runs = sorted(attempts[fleet], key=lambda run: run["tick_mean_ms"])
+        chosen = runs[len(runs) // 2]
+        chosen["tick_mean_ms_runs"] = [round(run["tick_mean_ms"], 3) for run in runs]
+        chosen["host_load_runs"] = [run["host_load"] for run in runs]
+        spread = runs[-1]["tick_mean_ms"] - runs[0]["tick_mean_ms"]
         chosen["tick_mean_spread_percent"] = round(
             100.0 * spread / chosen["tick_mean_ms"], 1) if chosen["tick_mean_ms"] else 0.0
         results.append(chosen)
