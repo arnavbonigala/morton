@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "check.h"
+#include "http_client.h"
 #include "metrics/registry.h"
 #include "net/http.h"
 
@@ -16,32 +17,11 @@ namespace {
 
 std::string http_get(const Address& server, const std::string& target,
                      const std::string& method = "GET", const std::string& body = "") {
-    int fd = ::socket(AF_INET, SOCK_STREAM, 0);
-    if (fd < 0) return "";
-    sockaddr_in sa = server.to_sockaddr();
-    if (::connect(fd, reinterpret_cast<sockaddr*>(&sa), sizeof(sa)) < 0) {
-        ::close(fd);
-        return "";
-    }
-
-    std::string request = method + " " + target + " HTTP/1.1\r\nHost: localhost\r\n";
-    request += "Content-Length: " + std::to_string(body.size()) + "\r\n\r\n" + body;
-    ::send(fd, request.data(), request.size(), 0);
-
-    std::string response;
-    char chunk[4096];
-    while (true) {
-        ssize_t got = ::recv(fd, chunk, sizeof(chunk), 0);
-        if (got <= 0) break;
-        response.append(chunk, static_cast<std::size_t>(got));
-    }
-    ::close(fd);
-    return response;
+    return morton_test::http_request(server, method, target, body);
 }
 
 std::string response_body(const std::string& response) {
-    std::size_t end = response.find("\r\n\r\n");
-    return end == std::string::npos ? "" : response.substr(end + 4);
+    return morton_test::http_body(response);
 }
 
 Address loopback(u16 port) { return Address(0x7f000001u, port); }
