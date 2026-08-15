@@ -195,7 +195,17 @@ def main():
         attempts.sort(key=lambda run: run["tick_mean_ms"])
         chosen = attempts[len(attempts) // 2]
         chosen["tick_mean_ms_runs"] = [round(run["tick_mean_ms"], 3) for run in attempts]
+        spread = attempts[-1]["tick_mean_ms"] - attempts[0]["tick_mean_ms"]
+        chosen["tick_mean_spread_percent"] = round(
+            100.0 * spread / chosen["tick_mean_ms"], 1) if chosen["tick_mean_ms"] else 0.0
         results.append(chosen)
+
+        # Runs of the same build on an uncontended host land within a few percent
+        # of each other, so a wide spread means the number describes the machine
+        # rather than the server and should not be read as a capacity result.
+        if chosen["tick_mean_spread_percent"] > 20.0:
+            print(f"  WARNING: tick mean varied {chosen['tick_mean_spread_percent']:.0f}% "
+                  f"across runs; the host was contended", flush=True)
 
         client = chosen["client"]
         print(f"connected peak {client['clients_peak_connected']}/{fleet}  "
