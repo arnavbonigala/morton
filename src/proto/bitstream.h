@@ -17,18 +17,14 @@ public:
         if (bits == 0) return;
         if (bit_pos_ + bits > capacity_bits_) { overflow_ = true; return; }
         if (bits < 32) value &= (1u << bits) - 1u;
-        u32 remaining = bits;
-        while (remaining > 0) {
-            u32 byte_index = bit_pos_ >> 3;
-            u32 bit_offset = bit_pos_ & 7;
-            u32 free_in_byte = 8 - bit_offset;
-            u32 take = remaining < free_in_byte ? remaining : free_in_byte;
-            u8 chunk = static_cast<u8>(value & ((1u << take) - 1u));
-            if (bit_offset == 0) buffer_[byte_index] = 0;
-            buffer_[byte_index] |= static_cast<u8>(chunk << bit_offset);
-            value >>= take;
-            remaining -= take;
-            bit_pos_ += take;
+
+        accumulator_ |= static_cast<u64>(value) << pending_bits_;
+        pending_bits_ += bits;
+        bit_pos_ += bits;
+        while (pending_bits_ >= 8) {
+            buffer_[flushed_bytes_++] = static_cast<u8>(accumulator_);
+            accumulator_ >>= 8;
+            pending_bits_ -= 8;
         }
     }
 
@@ -81,7 +77,14 @@ public:
     }
 
     u32 bits_written() const { return bit_pos_; }
-    u32 bytes_written() const { return (bit_pos_ + 7) >> 3; }
+
+    /// Materialises the trailing partial byte, so the buffer is complete as far
+    /// as the returned length. Safe to call repeatedly and to keep writing after.
+    u32 bytes_written() {
+        if (pending_bits_ > 0) buffer_[flushed_bytes_] = static_cast<u8>(accumulator_);
+        return flushed_bytes_ + (pending_bits_ > 0 ? 1u : 0u);
+    }
+
     u32 bits_remaining() const { return capacity_bits_ - bit_pos_; }
     bool overflowed() const { return overflow_; }
 
@@ -96,6 +99,9 @@ private:
     u8* buffer_;
     u32 capacity_bits_;
     u32 bit_pos_ = 0;
+    u64 accumulator_ = 0;
+    u32 pending_bits_ = 0;
+    u32 flushed_bytes_ = 0;
     bool overflow_ = false;
 };
 

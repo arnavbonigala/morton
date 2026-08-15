@@ -57,6 +57,22 @@ TEST_CASE(varint_roundtrip_and_compactness) {
     CHECK_EQ(small.bits_written(), 8u);
 }
 
+TEST_CASE(reading_the_length_mid_stream_does_not_disturb_the_bits) {
+    u8 buffer[64];
+    BitWriter writer(buffer, sizeof(buffer));
+    writer.write_bits(0x2b, 6);
+    CHECK_EQ(writer.bytes_written(), 1u);
+    CHECK_EQ(writer.bytes_written(), 1u);
+    writer.write_bits(0x1d3, 9);
+    writer.write_bool(true);
+    CHECK_EQ(writer.bytes_written(), 2u);
+
+    BitReader reader(buffer, writer.bytes_written());
+    CHECK_EQ(reader.read_bits(6), 0x2bu);
+    CHECK_EQ(reader.read_bits(9), 0x1d3u);
+    CHECK_EQ(reader.read_bool(), true);
+}
+
 TEST_CASE(writer_refuses_to_exceed_capacity) {
     u8 buffer[4];
     BitWriter writer(buffer, sizeof(buffer));
