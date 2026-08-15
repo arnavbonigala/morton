@@ -77,7 +77,7 @@ int main(int argc, char** argv) {
     for (u32 i = 0; i < drifters; ++i) world.spawn_drifter(Vec2(place(rng), place(rng)));
 
     std::vector<u8> packet(4096);
-    Histogram replicate_ms, snapshot_bytes, entities_sent;
+    Histogram replicate_ms, snapshot_bytes, entities_sent, relevant;
     u64 total_bytes = 0;
     u64 snapshots = 0;
 
@@ -109,6 +109,7 @@ int main(int argc, char** argv) {
             ++snapshots;
             snapshot_bytes.record(static_cast<f64>(size));
             entities_sent.record(static_cast<f64>(viewer->replication.stats().entities_sent));
+            relevant.record(static_cast<f64>(viewer->replication.stats().relevant_entities));
         }
         if (measured) replicate_ms.record(static_cast<f64>(now_us() - started) / 1000.0);
     }
@@ -123,9 +124,10 @@ int main(int argc, char** argv) {
             "{\"players\":%u,\"drifters\":%u,\"ticks\":%u,"
             "\"replicate_mean_ms\":%.4f,\"replicate_p50_ms\":%.4f,\"replicate_p99_ms\":%.4f,"
             "\"replicate_max_ms\":%.4f,\"per_viewer_us\":%.3f,\"snapshot_mean_bytes\":%.1f,"
-            "\"entities_sent_mean\":%.1f,\"per_client_kbps\":%.1f}\n",
+            "\"entities_sent_mean\":%.1f,\"relevant_mean\":%.1f,\"per_client_kbps\":%.1f}\n",
             players, drifters, ticks, replicate_ms.mean(), replicate_ms.p50(), replicate_ms.p99(),
-            replicate_ms.max(), per_viewer_us, snapshot_bytes.mean(), entities_sent.mean(), kbps);
+            replicate_ms.max(), per_viewer_us, snapshot_bytes.mean(), entities_sent.mean(),
+            relevant.mean(), kbps);
         return 0;
     }
 
