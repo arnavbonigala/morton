@@ -61,12 +61,14 @@ struct Harness {
     EntityId viewer = kInvalidEntity;
     InterestConfig config;
 
-    void build(u32 drifters, f32 aoi_radius = 260.f, u32 max_bytes = 1000) {
+    void build(u32 drifters, f32 aoi_radius = 260.f, u32 max_bytes = 1000,
+               u32 baseline_history = 32) {
         WorldParams params = test_params();
         world.configure(params, 32);
 
         config.aoi_radius = aoi_radius;
         config.max_snapshot_bytes = max_bytes;
+        config.baseline_history = baseline_history;
         replication.configure(config, params);
         receiver.configure(params, config.baseline_history);
 
@@ -362,3 +364,30 @@ TEST_CASE(malformed_snapshots_are_rejected_without_crashing) {
 }
 
 TEST_MAIN()
+
+TEST_CASE(a_baseline_that_ages_out_of_the_ring_is_abandoned_not_reused) {
+    Harness harness;
+    harness.build(400, 260.f, 1000, 8);
+
+    CHECK(harness.exchange() > 0);
+    CHECK(harness.receiver.latest.full);
+
+    // The client stops acking, so the server's baseline stays put until the ring
+    // wraps onto the slot the next frame is about to occupy.
+    for (u32 i = 0; i < 8; ++i) {
+        harness.world.step();
+        u8 packet[1200];
+        u32 size = harness.replication.encode(harness.world, harness.viewer, 0, packet,
+                                              sizeof(packet));
+        CHECK(size > 0);
+        if (i + 1 < 8) continue;
+
+        Tick tick = 0;
+        Tick baseline_tick = 0;
+        bool full = false;
+        CHECK(peek_snapshot_header(packet, size, &tick, &baseline_tick, &full));
+        CHECK(full);
+        CHECK(harness.receiver.apply(packet, size));
+        CHECK(ids_of(harness.receiver.latest.states) == harness.relevant_set());
+    }
+}
