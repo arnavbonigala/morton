@@ -101,6 +101,7 @@ public:
     /// Runs one simulation tick end to end. Public so tests and the load
     /// harness can drive the shard deterministically instead of racing a thread.
     void tick(u64 now_us);
+    void drain_until(u64 target_us);
 
     /// Blocking fixed-rate loop until stop() is called from another thread.
     void run();

@@ -102,6 +102,8 @@ def shard_report(port):
     report["entities"] = sums.get("morton_entities", 0.0)
     report["snapshots_total"] = sums.get("morton_snapshots_total", 0.0)
     report["snapshot_bytes_total"] = sums.get("morton_snapshot_bytes_total", 0.0)
+    report["receive_drops"] = sums.get("morton_receive_drops_total", 0.0)
+    report["send_failures"] = sums.get("morton_send_failures_total", 0.0)
     report["migrations_out"] = sums.get("morton_migrations_out_total", 0.0)
     report["migrations_in"] = sums.get("morton_migrations_in_total", 0.0)
     return report
@@ -172,6 +174,7 @@ def summarize(fleet, client, shards):
         "tick_mean_ms": sum(t["mean"] for t in ticks) / len(ticks) if ticks else 0.0,
         "worst_tick_p99_ms": max(t["p99"] for t in ticks) if ticks else 0.0,
         "entities_per_shard": entities,
+        "receive_drops": sum(s["receive_drops"] for s in shards.values()),
         "uncompressed_kbps": uncompressed_kbps,
         "bandwidth_reduction_percent":
             100.0 * (1.0 - measured_kbps / uncompressed_kbps) if uncompressed_kbps else 0.0,
@@ -221,6 +224,7 @@ def main():
                   f"tick mean {record['tick_mean_ms']:.2f} ms  "
                   f"p99 {record['worst_tick_p99_ms']:.2f} ms  "
                   f"loss {record['client']['loss_mean_percent']:.2f}%  "
+                  f"rx drops {record['receive_drops']:.0f}  "
                   f"host load {load}  "
                   f"shard cpu {max(cpu.values()) if cpu else 0:.0f}%", flush=True)
 

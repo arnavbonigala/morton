@@ -570,12 +570,35 @@ void WorldServer::tick(u64 now) {
     if (entities_gauge_) entities_gauge_->set(static_cast<f64>(world_.entities().size()));
 }
 
+/// Sleeps until the next tick is due, reading the socket rather than idling.
+///
+/// A shard's receive queue is a few hundred datagrams deep once the kernel's
+/// per-datagram overhead is counted, and a fleet large enough to matter sends
+/// more than that between two ticks. Draining only at the top of the tick
+/// therefore overflows the queue in the steady state, not just during a spike,
+/// and the inputs the kernel discards look to the client exactly like packet
+/// loss. Reading through the idle window keeps the queue shallow; the inputs
+/// land in the same per-player buffers either way and are still applied by the
+/// next step.
+void WorldServer::drain_until(u64 target_us) {
+    u64 now = now_us();
+    while (now + 1500 < target_us) {
+        connections_.receive(now);
+        u64 slice = target_us - now;
+        if (slice > 2000) slice = 2000;
+        connections_.socket().wait_readable(slice);
+        now = now_us();
+    }
+    connections_.socket().flush_sends();
+    precise_sleep_until(target_us);
+}
+
 void WorldServer::run() {
     const u64 tick_us = 1000000ull / config_.params.tick_rate;
     u64 next = now_us();
 
     while (running_.load(std::memory_order_relaxed)) {
-        precise_sleep_until(next);
+        drain_until(next);
         u64 current = now_us();
         tick(current);
         next += tick_us;
