@@ -1,0 +1,1047 @@
+[
+  {
+    "fleet": 500,
+    "client": {
+      "clients_requested": 500,
+      "clients_connected": 499,
+      "clients_peak_connected": 500,
+      "clients_failed": 0,
+      "wall_seconds": 46.273,
+      "inputs_sent": 678269,
+      "snapshots_received": 678987,
+      "snapshots_applied": 678987,
+      "migrations": 1311,
+      "bytes_sent": 31832143,
+      "bytes_received": 213299627,
+      "rtt_p50_ms": 33.928,
+      "rtt_p95_ms": 44.237,
+      "rtt_p99_ms": 47.095,
+      "rtt_max_ms": 53.103,
+      "loss_mean_percent": 0.011,
+      "loss_p99_percent": 0.001,
+      "client_recv_kbps_mean": 74.6,
+      "client_recv_kbps_p99": 124.04,
+      "client_send_kbps_mean": 13.27,
+      "prediction_error_mean": 3.6736,
+      "prediction_error_p99": 16.3043,
+      "rejoins": 4,
+      "downstream_kbps_total": 36876.86,
+      "upstream_kbps_total": 5503.38,
+      "snapshots_per_second": 14673.6
+    },
+    "shards": {
+      "world-a": {
+        "morton_tick_seconds": {
+          "count": 1686.0,
+          "mean": 1.5355871886120995,
+          "p50": 1.9631825095057036,
+          "p95": 3.6433999999999958,
+          "p99": 8.17118799999997
+        },
+        "morton_step_seconds": {
+          "count": 1686.0,
+          "mean": 0.0,
+          "p50": 0.5,
+          "p95": 0.9499999999999998,
+          "p99": 0.99
+        },
+        "morton_replicate_seconds": {
+          "count": 1686.0,
+          "mean": 0.9501779359430605,
+          "p50": 1.4313098591549296,
+          "p95": 2.3007490566037734,
+          "p99": 4.565139999999986
+        },
+        "morton_net_seconds": {
+          "count": 1686.0,
+          "mean": 0.056346381969157776,
+          "p50": 0.5194085027726433,
+          "p95": 0.9868761552680222,
+          "p99": 1.9546699999999917
+        },
+        "morton_snapshot_bytes": {
+          "count": 184434.0,
+          "mean": 305.7362904887385,
+          "p50": 283.5064673350677,
+          "p95": 497.12602704239384,
+          "p99": 634.5449906322095
+        },
+        "players": 11.0,
+        "entities": 311.0,
+        "snapshots_total": 184434.0,
+        "snapshot_bytes_total": 56388167.0,
+        "migrations_out": 396.0,
+        "migrations_in": 307.0
+      },
+      "world-b": {
+        "morton_tick_seconds": {
+          "count": 1687.0,
+          "mean": 2.1191464137522233,
+          "p50": 2.3856101321585905,
+          "p95": 5.617084782608691,
+          "p99": 9.516538999999984
+        },
+        "morton_step_seconds": {
+          "count": 1687.0,
+          "mean": 0.0,
+          "p50": 0.5,
+          "p95": 0.95,
+          "p99": 0.99
+        },
+        "morton_replicate_seconds": {
+          "count": 1687.0,
+          "mean": 1.4291641967990516,
+          "p50": 1.7629251968503936,
+          "p95": 4.186302173913042,
+          "p99": 7.726392999999987
+        },
+        "morton_net_seconds": {
+          "count": 1687.0,
+          "mean": 0.08535862477771192,
+          "p50": 0.5345373891001267,
+          "p95": 1.1478999999999993,
+          "p99": 2.530008461538458
+        },
+        "morton_snapshot_bytes": {
+          "count": 202801.0,
+          "mean": 355.7419194185433,
+          "p50": 361.27521462879895,
+          "p95": 575.0906692193887,
+          "p99": 643.0551176525086
+        },
+        "players": 9.0,
+        "entities": 309.0,
+        "snapshots_total": 202801.0,
+        "snapshot_bytes_total": 72144817.0,
+        "migrations_out": 436.0,
+        "migrations_in": 281.0
+      },
+      "world-c": {
+        "morton_tick_seconds": {
+          "count": 1689.0,
+          "mean": 1.2273534635879217,
+          "p50": 1.733392857142857,
+          "p95": 3.191175,
+          "p99": 8.163861999999975
+        },
+        "morton_step_seconds": {
+          "count": 1689.0,
+          "mean": 0.0,
+          "p50": 0.5,
+          "p95": 0.95,
+          "p99": 0.99
+        },
+        "morton_replicate_seconds": {
+          "count": 1689.0,
+          "mean": 0.7317939609236235,
+          "p50": 1.246955414012739,
+          "p95": 2.229240170940171,
+          "p99": 2.617579249999999
+        },
+        "morton_net_seconds": {
+          "count": 1689.0,
+          "mean": 0.015393724097098873,
+          "p50": 0.5069027611044418,
+          "p95": 0.9631152460984393,
+          "p99": 1.0833181818181805
+        },
+        "morton_snapshot_bytes": {
+          "count": 150486.0,
+          "mean": 294.46052124450114,
+          "p50": 268.4325776483431,
+          "p95": 490.62690233974945,
+          "p99": 553.1914402934952
+        },
+        "players": 2.0,
+        "entities": 302.0,
+        "snapshots_total": 150486.0,
+        "snapshot_bytes_total": 44312186.0,
+        "migrations_out": 233.0,
+        "migrations_in": 365.0
+      },
+      "world-d": {
+        "morton_tick_seconds": {
+          "count": 1686.0,
+          "mean": 1.0765124555160142,
+          "p50": 1.5835316455696202,
+          "p95": 2.840136764705881,
+          "p99": 6.435719999999968
+        },
+        "morton_step_seconds": {
+          "count": 1686.0,
+          "mean": 0.0005931198102016607,
+          "p50": 0.5002967359050446,
+          "p95": 0.9505637982195845,
+          "p99": 0.9905875370919881
+        },
+        "morton_replicate_seconds": {
+          "count": 1686.0,
+          "mean": 0.6500593119810203,
+          "p50": 1.1278026905829595,
+          "p95": 1.9161203883495141,
+          "p99": 2.271065142857142
+        },
+        "morton_net_seconds": {
+          "count": 1686.0,
+          "mean": 0.011862396204033215,
+          "p50": 0.5047904191616767,
+          "p95": 0.9591017964071855,
+          "p99": 0.9994850299401197
+        },
+        "morton_snapshot_bytes": {
+          "count": 142275.0,
+          "mean": 282.15787735020206,
+          "p50": 261.5620245835206,
+          "p95": 439.87185833082896,
+          "p99": 493.7435873218336
+        },
+        "players": 10.0,
+        "entities": 310.0,
+        "snapshots_total": 142275.0,
+        "snapshot_bytes_total": 40144012.0,
+        "migrations_out": 250.0,
+        "migrations_in": 357.0
+      }
+    },
+    "worst_tick_p99_ms": 9.516538999999984,
+    "entities_per_shard": 311.0,
+    "uncompressed_kbps": 1492.8,
+    "bandwidth_reduction_percent": 95.00267952840301
+  },
+  {
+    "fleet": 1000,
+    "client": {
+      "clients_requested": 1000,
+      "clients_connected": 997,
+      "clients_peak_connected": 1000,
+      "clients_failed": 0,
+      "wall_seconds": 47.521,
+      "inputs_sent": 1371401,
+      "snapshots_received": 1372223,
+      "snapshots_applied": 1372223,
+      "migrations": 2668,
+      "bytes_sent": 64362847,
+      "bytes_received": 603124173,
+      "rtt_p50_ms": 33.891,
+      "rtt_p95_ms": 47.207,
+      "rtt_p99_ms": 61.322,
+      "rtt_max_ms": 65.284,
+      "loss_mean_percent": 0.022,
+      "loss_p99_percent": 0.412,
+      "client_recv_kbps_mean": 104.45,
+      "client_recv_kbps_p99": 143.73,
+      "client_send_kbps_mean": 13.26,
+      "prediction_error_mean": 4.5897,
+      "prediction_error_p99": 20.5137,
+      "rejoins": 26,
+      "downstream_kbps_total": 101532.99,
+      "upstream_kbps_total": 10835.17,
+      "snapshots_per_second": 28875.9
+    },
+    "shards": {
+      "world-a": {
+        "morton_tick_seconds": {
+          "count": 1726.0,
+          "mean": 2.8707995365005794,
+          "p50": 3.5791368421052634,
+          "p95": 5.858566666666663,
+          "p99": 13.101882857142861
+        },
+        "morton_step_seconds": {
+          "count": 1726.0,
+          "mean": 0.004634994206257242,
+          "p50": 0.5005800464037123,
+          "p95": 0.9511020881670532,
+          "p99": 0.9911484918793505
+        },
+        "morton_replicate_seconds": {
+          "count": 1726.0,
+          "mean": 2.1460023174971035,
+          "p50": 2.9151744186046513,
+          "p95": 4.395678378378378,
+          "p99": 6.1340200000000005
+        },
+        "morton_net_seconds": {
+          "count": 1726.0,
+          "mean": 0.08864426419466975,
+          "p50": 0.5346964064436184,
+          "p95": 1.1070833333333325,
+          "p99": 2.5031560000000006
+        },
+        "morton_snapshot_bytes": {
+          "count": 313138.0,
+          "mean": 407.674849427409,
+          "p50": 399.8497811376673,
+          "p95": 575.2919991428446,
+          "p99": 583.6073913719251
+        },
+        "players": 93.0,
+        "entities": 393.0,
+        "snapshots_total": 313138.0,
+        "snapshot_bytes_total": 127658487.0,
+        "migrations_out": 571.0,
+        "migrations_in": 645.0
+      },
+      "world-b": {
+        "morton_tick_seconds": {
+          "count": 1726.0,
+          "mean": 2.7966396292004636,
+          "p50": 3.677573333333333,
+          "p95": 5.420740476190473,
+          "p99": 12.184110000000002
+        },
+        "morton_step_seconds": {
+          "count": 1727.0,
+          "mean": 0.0023161551823972205,
+          "p50": 0.5005797101449276,
+          "p95": 0.9511014492753622,
+          "p99": 0.9911478260869566
+        },
+        "morton_replicate_seconds": {
+          "count": 1726.0,
+          "mean": 2.0892236384704517,
+          "p50": 3.054550185873606,
+          "p95": 4.040529729729729,
+          "p99": 5.337037142857143
+        },
+        "morton_net_seconds": {
+          "count": 1726.0,
+          "mean": 0.093279258400927,
+          "p50": 0.5444794952681388,
+          "p95": 1.1849212121212112,
+          "p99": 1.9123133333333338
+        },
+        "morton_snapshot_bytes": {
+          "count": 300006.0,
+          "mean": 407.84393645460426,
+          "p50": 396.52287710016043,
+          "p95": 574.2710418596341,
+          "p99": 582.1203601398323
+        },
+        "players": 90.0,
+        "entities": 390.0,
+        "snapshots_total": 300002.0,
+        "snapshot_bytes_total": 122354162.0,
+        "migrations_out": 510.0,
+        "migrations_in": 742.0
+      },
+      "world-c": {
+        "morton_tick_seconds": {
+          "count": 1726.0,
+          "mean": 4.5573580533024325,
+          "p50": 5.04531746031746,
+          "p95": 9.95332702702702,
+          "p99": 17.897283333333338
+        },
+        "morton_step_seconds": {
+          "count": 1726.0,
+          "mean": 0.0,
+          "p50": 0.5,
+          "p95": 0.9499999999999998,
+          "p99": 0.99
+        },
+        "morton_replicate_seconds": {
+          "count": 1726.0,
+          "mean": 3.5730011587485513,
+          "p50": 4.267707317073171,
+          "p95": 7.039302409638552,
+          "p99": 12.084480000000001
+        },
+        "morton_net_seconds": {
+          "count": 1726.0,
+          "mean": 0.2381228273464658,
+          "p50": 0.5943526170798898,
+          "p95": 1.9868959999999984,
+          "p99": 3.2735825000000003
+        },
+        "morton_snapshot_bytes": {
+          "count": 391229.0,
+          "mean": 469.4688762847335,
+          "p50": 510.89125571873416,
+          "p95": 581.0266201021105,
+          "p99": 644.4157595163813
+        },
+        "players": 95.0,
+        "entities": 395.0,
+        "snapshots_total": 391229.0,
+        "snapshot_bytes_total": 183669839.0,
+        "migrations_out": 784.0,
+        "migrations_in": 637.0
+      },
+      "world-d": {
+        "morton_tick_seconds": {
+          "count": 1727.0,
+          "mean": 4.292993630573248,
+          "p50": 4.7303682634730535,
+          "p95": 8.723758333333324,
+          "p99": 16.51634583333334
+        },
+        "morton_step_seconds": {
+          "count": 1727.0,
+          "mean": 0.003474232773595831,
+          "p50": 0.5011607661056298,
+          "p95": 0.9522054556006964,
+          "p99": 0.9922983168891468
+        },
+        "morton_replicate_seconds": {
+          "count": 1727.0,
+          "mean": 3.203242617255356,
+          "p50": 3.877783393501805,
+          "p95": 5.986154444444442,
+          "p99": 12.667055454545459
+        },
+        "morton_net_seconds": {
+          "count": 1727.0,
+          "mean": 0.28662420382165604,
+          "p50": 0.6275436046511628,
+          "p95": 1.8897193548387086,
+          "p99": 3.9850400000000015
+        },
+        "morton_snapshot_bytes": {
+          "count": 375191.0,
+          "mean": 456.5036874551895,
+          "p50": 486.2129488111257,
+          "p95": 580.302664311558,
+          "p99": 642.5408671068168
+        },
+        "players": 81.0,
+        "entities": 381.0,
+        "snapshots_total": 375191.0,
+        "snapshot_bytes_total": 171276075.0,
+        "migrations_out": 818.0,
+        "migrations_in": 643.0
+      }
+    },
+    "worst_tick_p99_ms": 17.897283333333338,
+    "entities_per_shard": 395.0,
+    "uncompressed_kbps": 1896.0,
+    "bandwidth_reduction_percent": 94.49103375527426
+  },
+  {
+    "fleet": 1500,
+    "client": {
+      "clients_requested": 1500,
+      "clients_connected": 1492,
+      "clients_peak_connected": 1499,
+      "clients_failed": 0,
+      "wall_seconds": 48.78,
+      "inputs_sent": 2084678,
+      "snapshots_received": 2082497,
+      "snapshots_applied": 2082497,
+      "migrations": 4079,
+      "bytes_sent": 97840366,
+      "bytes_received": 1040688611,
+      "rtt_p50_ms": 33.969,
+      "rtt_p95_ms": 60.923,
+      "rtt_p99_ms": 69.608,
+      "rtt_max_ms": 66.669,
+      "loss_mean_percent": 0.219,
+      "loss_p99_percent": 2.002,
+      "client_recv_kbps_mean": 119.11,
+      "client_recv_kbps_p99": 143.95,
+      "client_send_kbps_mean": 13.23,
+      "prediction_error_mean": 5.2373,
+      "prediction_error_p99": 23.6388,
+      "rejoins": 48,
+      "downstream_kbps_total": 170673.19,
+      "upstream_kbps_total": 16045.84,
+      "snapshots_per_second": 42691.3
+    },
+    "shards": {
+      "world-a": {
+        "morton_tick_seconds": {
+          "count": 1764.0,
+          "mean": 8.381519274376418,
+          "p50": 9.479769811320754,
+          "p95": 16.868229166666666,
+          "p99": 29.598306666666595
+        },
+        "morton_step_seconds": {
+          "count": 1764.0,
+          "mean": 0.0005668934240362812,
+          "p50": 0.5002836074872377,
+          "p95": 0.9505388542257516,
+          "p99": 0.9905615428247305
+        },
+        "morton_replicate_seconds": {
+          "count": 1764.0,
+          "mean": 6.486961451247165,
+          "p50": 7.9051848739495805,
+          "p95": 13.383085714285713,
+          "p99": 16.44734545454543
+        },
+        "morton_net_seconds": {
+          "count": 1764.0,
+          "mean": 0.8543083900226757,
+          "p50": 1.075,
+          "p95": 3.329437837837837,
+          "p99": 5.522279999999992
+        },
+        "morton_snapshot_bytes": {
+          "count": 505253.0,
+          "mean": 486.4337648663145,
+          "p50": 521.0993234485821,
+          "p95": 580.8933228304409,
+          "p99": 639.9948473996956
+        },
+        "players": 225.0,
+        "entities": 525.0,
+        "snapshots_total": 505253.0,
+        "snapshot_bytes_total": 245772119.0,
+        "migrations_out": 939.0,
+        "migrations_in": 1079.0
+      },
+      "world-b": {
+        "morton_tick_seconds": {
+          "count": 1767.0,
+          "mean": 9.423882286361065,
+          "p50": 10.242266283524906,
+          "p95": 17.143393749999994,
+          "p99": 32.343603999999935
+        },
+        "morton_step_seconds": {
+          "count": 1767.0,
+          "mean": 0.001697792869269949,
+          "p50": 0.5005665722379603,
+          "p95": 0.9510764872521247,
+          "p99": 0.9911218130311614
+        },
+        "morton_replicate_seconds": {
+          "count": 1767.0,
+          "mean": 7.307866440294284,
+          "p50": 8.68178045325779,
+          "p95": 13.612690499999998,
+          "p99": 17.662012499999985
+        },
+        "morton_net_seconds": {
+          "count": 1767.0,
+          "mean": 0.9818902093944538,
+          "p50": 1.087,
+          "p95": 3.859044897959182,
+          "p99": 6.099198999999993
+        },
+        "morton_snapshot_bytes": {
+          "count": 525081.0,
+          "mean": 495.3019457950297,
+          "p50": 524.1898704194639,
+          "p95": 583.1289178452894,
+          "p99": 652.3528563325779
+        },
+        "players": 210.0,
+        "entities": 510.0,
+        "snapshots_total": 525081.0,
+        "snapshot_bytes_total": 260073641.0,
+        "migrations_out": 1052.0,
+        "migrations_in": 959.0
+      },
+      "world-c": {
+        "morton_tick_seconds": {
+          "count": 1764.0,
+          "mean": 10.461451247165533,
+          "p50": 11.187984126984126,
+          "p95": 20.104112499999996,
+          "p99": 30.965229999999945
+        },
+        "morton_step_seconds": {
+          "count": 1764.0,
+          "mean": 0.0,
+          "p50": 0.5,
+          "p95": 0.95,
+          "p99": 0.99
+        },
+        "morton_replicate_seconds": {
+          "count": 1764.0,
+          "mean": 8.260770975056689,
+          "p50": 9.354086538461539,
+          "p95": 15.539687499999998,
+          "p99": 19.45435199999998
+        },
+        "morton_net_seconds": {
+          "count": 1764.0,
+          "mean": 1.1077097505668936,
+          "p50": 1.2417333333333331,
+          "p95": 3.9947999999999997,
+          "p99": 8.023826666666649
+        },
+        "morton_snapshot_bytes": {
+          "count": 559161.0,
+          "mean": 515.8881663778411,
+          "p50": 533.8517607014758,
+          "p95": 603.6659176400781,
+          "p99": 658.1654529997387
+        },
+        "players": 248.0,
+        "entities": 548.0,
+        "snapshots_total": 559161.0,
+        "snapshot_bytes_total": 288464543.0,
+        "migrations_out": 1112.0,
+        "migrations_in": 969.0
+      },
+      "world-d": {
+        "morton_tick_seconds": {
+          "count": 1765.0,
+          "mean": 8.819263456090653,
+          "p50": 10.002312499999999,
+          "p95": 16.232214646464648,
+          "p99": 29.784379999999924
+        },
+        "morton_step_seconds": {
+          "count": 1765.0,
+          "mean": 0.0,
+          "p50": 0.5,
+          "p95": 0.95,
+          "p99": 0.99
+        },
+        "morton_replicate_seconds": {
+          "count": 1765.0,
+          "mean": 6.83172804532578,
+          "p50": 8.538583650190114,
+          "p95": 12.36372905027933,
+          "p99": 15.69091666666666
+        },
+        "morton_net_seconds": {
+          "count": 1765.0,
+          "mean": 0.9348441926345609,
+          "p50": 1.1109504132231405,
+          "p95": 3.6071,
+          "p99": 6.022512499999982
+        },
+        "morton_snapshot_bytes": {
+          "count": 508562.0,
+          "mean": 496.4744377283399,
+          "p50": 525.3513360774193,
+          "p95": 580.1946362472852,
+          "p99": 627.9728095485813
+        },
+        "players": 36.0,
+        "entities": 336.0,
+        "snapshots_total": 508562.0,
+        "snapshot_bytes_total": 252488033.0,
+        "migrations_out": 1011.0,
+        "migrations_in": 1064.0
+      }
+    },
+    "worst_tick_p99_ms": 32.343603999999935,
+    "entities_per_shard": 548.0,
+    "uncompressed_kbps": 2630.4,
+    "bandwidth_reduction_percent": 95.47179136253041
+  },
+  {
+    "fleet": 2000,
+    "client": {
+      "clients_requested": 2000,
+      "clients_connected": 1987,
+      "clients_peak_connected": 1997,
+      "clients_failed": 0,
+      "wall_seconds": 50.025,
+      "inputs_sent": 2798434,
+      "snapshots_received": 2771052,
+      "snapshots_applied": 2771052,
+      "migrations": 5461,
+      "bytes_sent": 131340398,
+      "bytes_received": 1477091899,
+      "rtt_p50_ms": 41.349,
+      "rtt_p95_ms": 67.61,
+      "rtt_p99_ms": 70.923,
+      "rtt_max_ms": 71.58,
+      "loss_mean_percent": 3.601,
+      "loss_p99_percent": 17.478,
+      "client_recv_kbps_mean": 125.33,
+      "client_recv_kbps_p99": 144.28,
+      "client_send_kbps_mean": 13.04,
+      "prediction_error_mean": 6.0213,
+      "prediction_error_p99": 25.8836,
+      "rejoins": 94,
+      "downstream_kbps_total": 236216.93,
+      "upstream_kbps_total": 21003.99,
+      "snapshots_per_second": 55393.4
+    },
+    "shards": {
+      "world-a": {
+        "morton_tick_seconds": {
+          "count": 1802.0,
+          "mean": 18.519422863485016,
+          "p50": 19.84496864111498,
+          "p95": 38.26865499999998,
+          "p99": 57.55622750000001
+        },
+        "morton_step_seconds": {
+          "count": 1803.0,
+          "mean": 0.02939545202440377,
+          "p50": 0.5098981900452488,
+          "p95": 0.9688065610859729,
+          "p99": 1.6332900000000015
+        },
+        "morton_replicate_seconds": {
+          "count": 1802.0,
+          "mean": 14.649833518312986,
+          "p50": 16.1837723880597,
+          "p95": 30.080770731707304,
+          "p99": 41.636024444444445
+        },
+        "morton_net_seconds": {
+          "count": 1802.0,
+          "mean": 2.562153163152053,
+          "p50": 2.4234090909090913,
+          "p95": 7.7433131578947325,
+          "p99": 12.050048000000002
+        },
+        "morton_snapshot_bytes": {
+          "count": 680722.0,
+          "mean": 529.3070651455366,
+          "p50": 545.3600694442157,
+          "p95": 641.1374794792243,
+          "p99": 665.417873869131
+        },
+        "players": 337.0,
+        "entities": 637.0,
+        "snapshots_total": 680718.0,
+        "snapshot_bytes_total": 360308878.0,
+        "migrations_out": 1394.0,
+        "migrations_in": 1362.0
+      },
+      "world-b": {
+        "morton_tick_seconds": {
+          "count": 1772.0,
+          "mean": 21.33690744920993,
+          "p50": 22.59872164948454,
+          "p95": 44.44366086956519,
+          "p99": 65.64666909090906
+        },
+        "morton_step_seconds": {
+          "count": 1772.0,
+          "mean": 0.0208803611738149,
+          "p50": 0.5065751858204688,
+          "p95": 0.9624928530588908,
+          "p99": 1.244026666666666
+        },
+        "morton_replicate_seconds": {
+          "count": 1772.0,
+          "mean": 17.678329571106097,
+          "p50": 19.098764705882353,
+          "p95": 36.270363934426214,
+          "p99": 48.13935499999999
+        },
+        "morton_net_seconds": {
+          "count": 1772.0,
+          "mean": 2.3165914221218964,
+          "p50": 2.013475409836066,
+          "p95": 7.795122222222218,
+          "p99": 12.798395999999995
+        },
+        "morton_snapshot_bytes": {
+          "count": 722394.0,
+          "mean": 532.548814082066,
+          "p50": 546.7437996711983,
+          "p95": 641.2145464919004,
+          "p99": 665.462187709334
+        },
+        "players": 346.0,
+        "entities": 646.0,
+        "snapshots_total": 722394.0,
+        "snapshot_bytes_total": 384710068.0,
+        "migrations_out": 1464.0,
+        "migrations_in": 1347.0
+      },
+      "world-c": {
+        "morton_tick_seconds": {
+          "count": 1792.0,
+          "mean": 19.22265625,
+          "p50": 20.51763311688312,
+          "p95": 42.254429787234024,
+          "p99": 61.09889599999994
+        },
+        "morton_step_seconds": {
+          "count": 1792.0,
+          "mean": 0.012276785714285712,
+          "p50": 0.5036537380550872,
+          "p95": 0.9569421023046655,
+          "p99": 0.9972344013490725
+        },
+        "morton_replicate_seconds": {
+          "count": 1792.0,
+          "mean": 15.954241071428573,
+          "p50": 18.017081967213112,
+          "p95": 33.93068780487803,
+          "p99": 47.64952999999997
+        },
+        "morton_net_seconds": {
+          "count": 1792.0,
+          "mean": 2.09765625,
+          "p50": 1.9080714285714286,
+          "p95": 7.009338888888886,
+          "p99": 10.786823999999976
+        },
+        "morton_snapshot_bytes": {
+          "count": 705518.0,
+          "mean": 533.1351149084786,
+          "p50": 547.2195382066092,
+          "p95": 646.0314152928087,
+          "p99": 666.4015144508206
+        },
+        "players": 387.0,
+        "entities": 687.0,
+        "snapshots_total": 705518.0,
+        "snapshot_bytes_total": 376136420.0,
+        "migrations_out": 1290.0,
+        "migrations_in": 1370.0
+      },
+      "world-d": {
+        "morton_tick_seconds": {
+          "count": 1786.0,
+          "mean": 20.029115341545353,
+          "p50": 19.81215671641791,
+          "p95": 42.71129014084506,
+          "p99": 58.981597142856984
+        },
+        "morton_step_seconds": {
+          "count": 1786.0,
+          "mean": 0.025195968645016796,
+          "p50": 0.5059490084985836,
+          "p95": 0.9613031161473087,
+          "p99": 1.162039999999989
+        },
+        "morton_replicate_seconds": {
+          "count": 1786.0,
+          "mean": 16.409854423292273,
+          "p50": 16.19000518134715,
+          "p95": 35.277320689655156,
+          "p99": 46.27801999999995
+        },
+        "morton_net_seconds": {
+          "count": 1786.0,
+          "mean": 2.3348264277715565,
+          "p50": 2.0205368421052636,
+          "p95": 7.784102173913039,
+          "p99": 12.27585428571427
+        },
+        "morton_snapshot_bytes": {
+          "count": 696093.0,
+          "mean": 535.6601258739852,
+          "p50": 547.5040733914581,
+          "p95": 641.5220413808576,
+          "p99": 665.6330936839433
+        },
+        "players": 318.0,
+        "entities": 618.0,
+        "snapshots_total": 696093.0,
+        "snapshot_bytes_total": 372869264.0,
+        "migrations_out": 1363.0,
+        "migrations_in": 1369.0
+      }
+    },
+    "worst_tick_p99_ms": 65.64666909090906,
+    "entities_per_shard": 687.0,
+    "uncompressed_kbps": 3297.6,
+    "bandwidth_reduction_percent": 96.1993571081999
+  },
+  {
+    "fleet": 3000,
+    "client": {
+      "clients_requested": 3000,
+      "clients_connected": 2939,
+      "clients_peak_connected": 2969,
+      "clients_failed": 0,
+      "wall_seconds": 52.529,
+      "inputs_sent": 4174484,
+      "snapshots_received": 3150997,
+      "snapshots_applied": 3150997,
+      "migrations": 7216,
+      "bytes_sent": 195921748,
+      "bytes_received": 1729990234,
+      "rtt_p50_ms": 67.364,
+      "rtt_p95_ms": 98.545,
+      "rtt_p99_ms": 107.873,
+      "rtt_max_ms": 125.102,
+      "loss_mean_percent": 37.102,
+      "loss_p99_percent": 66.639,
+      "client_recv_kbps_mean": 90.58,
+      "client_recv_kbps_p99": 142.66,
+      "client_send_kbps_mean": 12.34,
+      "prediction_error_mean": 8.78,
+      "prediction_error_p99": 33.4079,
+      "rejoins": 234,
+      "downstream_kbps_total": 263470.01,
+      "upstream_kbps_total": 29838.03,
+      "snapshots_per_second": 59985.4
+    },
+    "shards": {
+      "world-a": {
+        "morton_tick_seconds": {
+          "count": 1528.0,
+          "mean": 29.314790575916227,
+          "p50": 36.38201298701299,
+          "p95": 62.06623999999998,
+          "p99": 88.35310000000003
+        },
+        "morton_step_seconds": {
+          "count": 1529.0,
+          "mean": 0.02746893394375409,
+          "p50": 0.5066269052352551,
+          "p95": 0.9625911199469848,
+          "p99": 1.0883125000000007
+        },
+        "morton_replicate_seconds": {
+          "count": 1528.0,
+          "mean": 25.785340314136125,
+          "p50": 32.83480392156862,
+          "p95": 54.88756842105262,
+          "p99": 75.86590400000003
+        },
+        "morton_net_seconds": {
+          "count": 1528.0,
+          "mean": 2.2689790575916233,
+          "p50": 2.348672897196262,
+          "p95": 6.7155904761904734,
+          "p99": 11.31621600000001
+        },
+        "morton_snapshot_bytes": {
+          "count": 809469.0,
+          "mean": 547.760796275089,
+          "p50": 565.0560429283628,
+          "p95": 660.7935832187025,
+          "p99": 670.2132088038005
+        },
+        "players": 260.0,
+        "entities": 560.0,
+        "snapshots_total": 809464.0,
+        "snapshot_bytes_total": 443392014.0,
+        "migrations_out": 1889.0,
+        "migrations_in": 1799.0
+      },
+      "world-b": {
+        "morton_tick_seconds": {
+          "count": 1486.0,
+          "mean": 30.284656796769852,
+          "p50": 38.730538461538465,
+          "p95": 63.95937702702703,
+          "p99": 86.91019600000008
+        },
+        "morton_step_seconds": {
+          "count": 1486.0,
+          "mean": 0.030282637954239567,
+          "p50": 0.5078605604921395,
+          "p95": 0.964935064935065,
+          "p99": 1.2153600000000058
+        },
+        "morton_replicate_seconds": {
+          "count": 1486.0,
+          "mean": 26.571332436069984,
+          "p50": 34.447428571428574,
+          "p95": 56.4871576923077,
+          "p99": 76.34386750000014
+        },
+        "morton_net_seconds": {
+          "count": 1486.0,
+          "mean": 2.4663526244952894,
+          "p50": 2.352920353982301,
+          "p95": 7.477334782608698,
+          "p99": 13.080660000000062
+        },
+        "morton_snapshot_bytes": {
+          "count": 799706.0,
+          "mean": 552.4642956286435,
+          "p50": 570.1338973088885,
+          "p95": 661.6058465950862,
+          "p99": 670.0856867454058
+        },
+        "players": 231.0,
+        "entities": 531.0,
+        "snapshots_total": 799706.0,
+        "snapshot_bytes_total": 441809012.0,
+        "migrations_out": 1928.0,
+        "migrations_in": 1753.0
+      },
+      "world-c": {
+        "morton_tick_seconds": {
+          "count": 1576.0,
+          "mean": 28.767131979695435,
+          "p50": 35.09638582677165,
+          "p95": 57.00039826086956,
+          "p99": 80.54627636363637
+        },
+        "morton_step_seconds": {
+          "count": 1577.0,
+          "mean": 0.008877615726062143,
+          "p50": 0.5035121328224776,
+          "p95": 0.9566730523627075,
+          "p99": 0.9969540229885059
+        },
+        "morton_replicate_seconds": {
+          "count": 1576.0,
+          "mean": 25.289340101522843,
+          "p50": 31.487666666666662,
+          "p95": 49.864229268292675,
+          "p99": 66.55252571428572
+        },
+        "morton_net_seconds": {
+          "count": 1576.0,
+          "mean": 2.1808375634517767,
+          "p50": 2.355060606060606,
+          "p95": 6.441733333333329,
+          "p99": 10.555226666666668
+        },
+        "morton_snapshot_bytes": {
+          "count": 818038.0,
+          "mean": 548.3724973656481,
+          "p50": 564.2111895446425,
+          "p95": 659.8962140762126,
+          "p99": 669.680181938217
+        },
+        "players": 584.0,
+        "entities": 884.0,
+        "snapshots_total": 818037.0,
+        "snapshot_bytes_total": 448588875.0,
+        "migrations_out": 1845.0,
+        "migrations_in": 1741.0
+      },
+      "world-d": {
+        "morton_tick_seconds": {
+          "count": 1519.0,
+          "mean": 29.387755102040817,
+          "p50": 34.625514705882345,
+          "p95": 62.701219444444426,
+          "p99": 87.41000071428567
+        },
+        "morton_step_seconds": {
+          "count": 1520.0,
+          "mean": 0.021052631578947368,
+          "p50": 0.5066666666666668,
+          "p95": 0.9626666666666667,
+          "p99": 1.1199999999999988
+        },
+        "morton_replicate_seconds": {
+          "count": 1519.0,
+          "mean": 25.727452271231073,
+          "p50": 30.45970909090909,
+          "p95": 55.3653844262295,
+          "p99": 73.11181882352938
+        },
+        "morton_net_seconds": {
+          "count": 1519.0,
+          "mean": 2.383146807109941,
+          "p50": 2.327871428571428,
+          "p95": 6.915628749999999,
+          "p99": 11.802926666666657
+        },
+        "morton_snapshot_bytes": {
+          "count": 787280.0,
+          "mean": 548.8133853266944,
+          "p50": 565.7836130118914,
+          "p95": 660.4766883707375,
+          "p99": 669.8090142040978
+        },
+        "players": 612.0,
+        "entities": 912.0,
+        "snapshots_total": 787278.0,
+        "snapshot_bytes_total": 432068397.0,
+        "migrations_out": 1693.0,
+        "migrations_in": 1865.0
+      }
+    },
+    "worst_tick_p99_ms": 88.35310000000003,
+    "entities_per_shard": 912.0,
+    "uncompressed_kbps": 4377.6,
+    "bandwidth_reduction_percent": 97.93082967836257
+  }
+]

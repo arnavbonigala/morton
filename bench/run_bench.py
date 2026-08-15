@@ -20,6 +20,8 @@ HISTOGRAMS = [
     "morton_tick_seconds",
     "morton_step_seconds",
     "morton_replicate_seconds",
+    "morton_encode_seconds",
+    "morton_send_seconds",
     "morton_net_seconds",
     "morton_snapshot_bytes",
 ]
