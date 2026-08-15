@@ -187,8 +187,10 @@ u32 ReplicationState::encode(const World& world, EntityId viewer, u32 last_input
     if (candidates_.size() <= fits) {
         for (const Candidate& candidate : candidates_) selected_.push_back(candidate.index);
     } else {
-        std::sort(candidates_.begin(), candidates_.end(),
-                  [](const Candidate& a, const Candidate& b) { return a.priority > b.priority; });
+        std::nth_element(candidates_.begin(), candidates_.begin() + fits, candidates_.end(),
+                         [](const Candidate& a, const Candidate& b) {
+                             return a.priority > b.priority;
+                         });
         for (u32 i = 0; i < fits; ++i) selected_.push_back(candidates_[i].index);
         std::sort(selected_.begin(), selected_.end());
     }
