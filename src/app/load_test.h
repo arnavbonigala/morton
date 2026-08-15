@@ -20,6 +20,11 @@ struct LoadTestConfig {
     u32 report_interval_ms = 5000;
     u32 seed = 0x9e3779b9u;
     u64 timeout_us = 5000000;
+
+    /// Seconds a dropped bot waits before asking the matchmaker for a new
+    /// session. Zero leaves dropped bots down, which is what a pure throughput
+    /// run wants; a chaos run wants them to come back.
+    u32 rejoin_backoff_seconds = 2;
     bool quiet = false;
     WorldParams params;
 };
@@ -33,6 +38,7 @@ struct LoadTestReport {
     u64 snapshots_received = 0;
     u64 snapshots_applied = 0;
     u64 migrations = 0;
+    u64 rejoins = 0;
     u64 bytes_sent = 0;
     u64 bytes_received = 0;
     f64 wall_seconds = 0.0;
@@ -74,9 +80,12 @@ private:
         bool failed = false;
         f32 heading = 0.f;
         f32 turn_at = 0.f;
+        u64 rejoin_at_us = 0;
+        u32 rejoins = 0;
     };
 
     void run_worker(u32 worker, u32 first, u32 count);
+    bool launch(Bot& bot, u32 index);
     void sample(Bot& bot);
 
     LoadTestConfig config_;
@@ -85,6 +94,7 @@ private:
     std::atomic<u32> connected_{0};
     std::atomic<u32> peak_connected_{0};
     std::atomic<u32> failed_{0};
+    std::atomic<u64> rejoins_{0};
     std::vector<std::atomic<u32>> worker_live_;
 
     Histogram rtt_;

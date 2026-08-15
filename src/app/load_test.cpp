@@ -40,6 +40,16 @@ void LoadTest::sample(Bot& bot) {
     }
 }
 
+bool LoadTest::launch(Bot& bot, u32 index) {
+    GameClientConfig client;
+    client.player_id = config_.player_prefix + "-" + std::to_string(index);
+    client.matchmaker = config_.matchmaker;
+    client.direct_shard = config_.direct_shard;
+    client.params = config_.params;
+    client.timeout_us = config_.timeout_us;
+    return bot.client.start(client);
+}
+
 void LoadTest::run_worker(u32 worker, u32 first, u32 count) {
     const u64 step_us = 1000000ull / config_.params.tick_rate;
     const u64 sample_interval_us = static_cast<u64>(config_.report_interval_ms) * 1000ull;
@@ -57,13 +67,7 @@ void LoadTest::run_worker(u32 worker, u32 first, u32 count) {
                 if (now < bot.join_at_us) continue;
                 bot.started = true;
 
-                GameClientConfig client;
-                client.player_id = config_.player_prefix + "-" + std::to_string(first + i);
-                client.matchmaker = config_.matchmaker;
-                client.direct_shard = config_.direct_shard;
-                client.params = config_.params;
-                client.timeout_us = config_.timeout_us;
-                if (!bot.client.start(client)) {
+                if (!launch(bot, first + i)) {
                     bot.failed = true;
                     failed_.fetch_add(1, std::memory_order_relaxed);
                     continue;
@@ -76,7 +80,29 @@ void LoadTest::run_worker(u32 worker, u32 first, u32 count) {
             if (bot.failed) continue;
 
             bot.client.update(now);
-            if (!bot.client.connected()) continue;
+            if (!bot.client.connected()) {
+                ClientState state = bot.client.state();
+                bool dropped = state == ClientState::kTimedOut ||
+                               state == ClientState::kDisconnected ||
+                               state == ClientState::kDenied;
+                if (!dropped || config_.rejoin_backoff_seconds == 0) continue;
+
+                if (bot.rejoin_at_us == 0) {
+                    bot.rejoin_at_us =
+                        now + static_cast<u64>(config_.rejoin_backoff_seconds) * 1000000ull;
+                    continue;
+                }
+                if (now < bot.rejoin_at_us) continue;
+
+                bot.rejoin_at_us = 0;
+                bot.client.stop();
+                if (launch(bot, first + i)) {
+                    ++bot.rejoins;
+                    rejoins_.fetch_add(1, std::memory_order_relaxed);
+                }
+                continue;
+            }
+            bot.rejoin_at_us = 0;
 
             f32 elapsed = static_cast<f32>(now - started_at_us_) / 1000000.f;
             if (elapsed > bot.turn_at) {
@@ -135,6 +161,7 @@ bool LoadTest::run(const LoadTestConfig& config, LoadTestReport* out) {
     connected_.store(0, std::memory_order_relaxed);
     peak_connected_.store(0, std::memory_order_relaxed);
     failed_.store(0, std::memory_order_relaxed);
+    rejoins_.store(0, std::memory_order_relaxed);
     rtt_.reset();
     loss_.reset();
     recv_kbps_.reset();
@@ -189,6 +216,7 @@ bool LoadTest::run(const LoadTestConfig& config, LoadTestReport* out) {
         report.bytes_sent += stats.bytes_sent;
         report.bytes_received += stats.bytes_received;
     }
+    report.rejoins = rejoins_.load(std::memory_order_relaxed);
     report.clients_peak_connected = peak_connected_.load(std::memory_order_relaxed);
     report.clients_failed = failed_.load(std::memory_order_relaxed);
 
@@ -232,7 +260,7 @@ std::string report_json(const LoadTestReport& report) {
         "\"rtt_p99_ms\":%.3f,\"rtt_max_ms\":%.3f,\"loss_mean_percent\":%.3f,"
         "\"loss_p99_percent\":%.3f,\"client_recv_kbps_mean\":%.2f,"
         "\"client_recv_kbps_p99\":%.2f,\"client_send_kbps_mean\":%.2f,"
-        "\"prediction_error_mean\":%.4f,\"prediction_error_p99\":%.4f,"
+        "\"prediction_error_mean\":%.4f,\"prediction_error_p99\":%.4f,\"rejoins\":%llu,"
         "\"downstream_kbps_total\":%.2f,\"upstream_kbps_total\":%.2f,"
         "\"snapshots_per_second\":%.1f}",
         report.clients_requested, report.clients_connected, report.clients_peak_connected,
@@ -246,7 +274,8 @@ std::string report_json(const LoadTestReport& report) {
         report.rtt_p95_ms, report.rtt_p99_ms, report.rtt_max_ms, report.loss_mean_percent,
         report.loss_p99_percent, report.client_recv_kbps_mean, report.client_recv_kbps_p99,
         report.client_send_kbps_mean, report.prediction_error_mean,
-        report.prediction_error_p99, report.downstream_kbps_total,
+        report.prediction_error_p99, static_cast<unsigned long long>(report.rejoins),
+        report.downstream_kbps_total,
         report.upstream_kbps_total, report.snapshots_per_second);
     return written > 0 ? std::string(buffer, static_cast<std::size_t>(written)) : std::string("{}");
 }
@@ -261,7 +290,7 @@ std::string report_text(const LoadTestReport& report) {
         "per client     down %.1f kbit/s (p99 %.1f)  up %.1f kbit/s\n"
         "aggregate      down %.1f kbit/s  up %.1f kbit/s  %.0f snapshots/s\n"
         "prediction     mean %.3f units  p99 %.3f units\n"
-        "migrations     %llu  inputs %llu  snapshots %llu applied of %llu\n",
+        "migrations     %llu  rejoins %llu  inputs %llu  snapshots %llu applied of %llu\n",
         report.clients_connected, report.clients_requested, report.clients_peak_connected,
         report.clients_failed, report.wall_seconds, report.rtt_p50_ms, report.rtt_p95_ms, report.rtt_p99_ms,
         report.rtt_max_ms, report.loss_mean_percent, report.loss_p99_percent,
@@ -270,6 +299,7 @@ std::string report_text(const LoadTestReport& report) {
         report.upstream_kbps_total, report.snapshots_per_second,
         report.prediction_error_mean, report.prediction_error_p99,
         static_cast<unsigned long long>(report.migrations),
+        static_cast<unsigned long long>(report.rejoins),
         static_cast<unsigned long long>(report.inputs_sent),
         static_cast<unsigned long long>(report.snapshots_applied),
         static_cast<unsigned long long>(report.snapshots_received));

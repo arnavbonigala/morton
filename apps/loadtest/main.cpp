@@ -48,6 +48,7 @@ int main(int argc, char** argv) {
     config.duration_seconds = number(argc, argv, "--MORTON_DURATION", "20");
     config.report_interval_ms = number(argc, argv, "--MORTON_REPORT_MS", "5000");
     config.params.tick_rate = number(argc, argv, "--MORTON_TICK_RATE", "30");
+    config.rejoin_backoff_seconds = number(argc, argv, "--MORTON_REJOIN_SECONDS", "2");
 
     const char* direct = option(argc, argv, "--MORTON_SHARD", "");
     if (direct[0] != '\0' && !Address::parse(direct, &config.direct_shard)) {
