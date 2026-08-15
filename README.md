@@ -2,7 +2,13 @@
 
 A distributed, authoritative real-time simulation backend in C++20 — the server infrastructure a multiplayer game runs on. Fixed-tick authoritative simulation over UDP, client prediction with server reconciliation, interest-managed delta replication, and live player migration across a sharded world.
 
-**~3000 concurrent clients at 30 Hz across four single-core shards**, at 0.1% packet loss and a 22.9 ms worst-shard tick p99. Full numbers in [BENCHMARKS.md](BENCHMARKS.md).
+**~3000 concurrent clients at 30 Hz across four single-core shards**, at 0.1% packet loss and a 22.9 ms worst-shard tick p99.
+
+| | |
+|---|---|
+| [ARCHITECTURE.md](ARCHITECTURE.md) | processes, tick loop, cluster coordination, failure handling |
+| [PROTOCOL.md](PROTOCOL.md) | packet frames, handshake, reliability, snapshot encoding |
+| [BENCHMARKS.md](BENCHMARKS.md) | capacity curve, phase breakdown, encoder microbenchmarks, soak |
 
 ---
 
