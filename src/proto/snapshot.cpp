@@ -97,23 +97,43 @@ u32 ReplicationState::encode(const World& world, EntityId viewer, u32 last_input
               [](const EntityWireState& a, const EntityWireState& b) { return a.id < b.id; });
     stats_.relevant_entities = static_cast<u32>(scratch_current_.size());
 
-    auto is_relevant = [&](EntityId id) {
-        auto it = std::lower_bound(
-            scratch_current_.begin(), scratch_current_.end(), id,
-            [](const EntityWireState& state, EntityId target) { return state.id < target; });
-        return it != scratch_current_.end() && it->id == id;
-    };
-
+    // A baseline old enough to share a ring slot with the frame about to be
+    // written would be cleared out from under the encoder, so it is not usable.
     const SnapshotFrame* base = baseline();
+    if (base != nullptr && base == frame_for(world.tick())) base = nullptr;
     const bool full = base == nullptr;
     stats_.was_full_snapshot = full;
+
+    // Both sides are sorted by id, so one merge yields every entity's baseline
+    // state and the removal list at once.
+    previous_.assign(scratch_current_.size(), nullptr);
+    removed_.clear();
+    if (!full) {
+        std::size_t b = 0;
+        std::size_t c = 0;
+        while (b < base->states.size() && c < scratch_current_.size()) {
+            EntityId old_id = base->states[b].id;
+            EntityId new_id = scratch_current_[c].id;
+            if (old_id < new_id) {
+                removed_.push_back(old_id);
+                ++b;
+            } else if (old_id > new_id) {
+                ++c;
+            } else {
+                previous_[c] = &base->states[b];
+                ++b;
+                ++c;
+            }
+        }
+        for (; b < base->states.size(); ++b) removed_.push_back(base->states[b].id);
+    }
 
     candidates_.clear();
     candidates_.reserve(scratch_current_.size());
 
     for (u32 i = 0; i < scratch_current_.size(); ++i) {
         const EntityWireState& current = scratch_current_[i];
-        const EntityWireState* previous = full ? nullptr : base->find(current.id);
+        const EntityWireState* previous = previous_[i];
         if (previous != nullptr && current.same_state_as(*previous)) continue;
 
         Vec2 decoded(quantizers_.position.decode(current.px),
@@ -129,9 +149,6 @@ u32 ReplicationState::encode(const World& world, EntityId viewer, u32 last_input
         candidates_.push_back({i, priority});
     }
 
-    std::sort(candidates_.begin(), candidates_.end(),
-              [](const Candidate& a, const Candidate& b) { return a.priority > b.priority; });
-
     const u32 budget = std::min(capacity, config_.max_snapshot_bytes);
     BitWriter writer(out, budget);
 
@@ -140,13 +157,6 @@ u32 ReplicationState::encode(const World& world, EntityId viewer, u32 last_input
     if (!full) writer.write_u32(base->tick);
     writer.write_u32(last_input_sequence);
     writer.write_varint(viewer);
-
-    removed_.clear();
-    if (!full) {
-        for (const EntityWireState& previous : base->states) {
-            if (!is_relevant(previous.id)) removed_.push_back(previous.id);
-        }
-    }
 
     writer.write_varint(static_cast<u32>(removed_.size()));
     EntityId previous_id = 0;
@@ -163,23 +173,27 @@ u32 ReplicationState::encode(const World& world, EntityId viewer, u32 last_input
 
     selected_.clear();
     u32 available_bits = writer.bits_remaining();
-    u32 used_bits = kUpdateCountBits;
-    for (const Candidate& candidate : candidates_) {
-        if (used_bits + kWorstCaseEntityBits > available_bits) break;
-        used_bits += kWorstCaseEntityBits;
-        selected_.push_back(candidate.index);
-    }
+    u32 fits = available_bits <= kUpdateCountBits
+                   ? 0
+                   : (available_bits - kUpdateCountBits) / kWorstCaseEntityBits;
 
-    std::sort(selected_.begin(), selected_.end(), [&](u32 a, u32 b) {
-        return scratch_current_[a].id < scratch_current_[b].id;
-    });
+    // Uncontended packets are the common case, and there the priority order does
+    // not matter: candidates already arrive in id order, so both sorts are skipped.
+    if (candidates_.size() <= fits) {
+        for (const Candidate& candidate : candidates_) selected_.push_back(candidate.index);
+    } else {
+        std::sort(candidates_.begin(), candidates_.end(),
+                  [](const Candidate& a, const Candidate& b) { return a.priority > b.priority; });
+        for (u32 i = 0; i < fits; ++i) selected_.push_back(candidates_[i].index);
+        std::sort(selected_.begin(), selected_.end());
+    }
 
     writer.write_u16(static_cast<u16>(selected_.size()));
 
     previous_id = 0;
     for (u32 index : selected_) {
         const EntityWireState& current = scratch_current_[index];
-        const EntityWireState* previous = full ? nullptr : base->find(current.id);
+        const EntityWireState* previous = previous_[index];
 
         write_entity_id(&writer, current.id, previous_id);
         previous_id = current.id;
@@ -245,8 +259,7 @@ u32 ReplicationState::encode(const World& world, EntityId viewer, u32 last_input
                 frame->states.push_back(scratch_current_[i]);
                 continue;
             }
-            const EntityWireState* previous = full ? nullptr : base->find(scratch_current_[i].id);
-            if (previous != nullptr) frame->states.push_back(*previous);
+            if (previous_[i] != nullptr) frame->states.push_back(*previous_[i]);
         }
     }
 

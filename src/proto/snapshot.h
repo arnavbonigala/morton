@@ -145,6 +145,7 @@ private:
 
     std::unordered_map<EntityId, f32> priority_;
     std::vector<EntityWireState> scratch_current_;
+    std::vector<const EntityWireState*> previous_;
     std::vector<Candidate> candidates_;
     std::vector<u32> selected_;
     std::vector<EntityId> removed_;
