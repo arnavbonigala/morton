@@ -115,7 +115,7 @@ bool HttpServer::start(const Address& bind) {
         return false;
     }
 
-    if (::listen(listen_fd_, 64) < 0) {
+    if (::listen(listen_fd_, 512) < 0) {
         MORTON_LOG_ERROR("http listen failed: %s", std::strerror(errno));
         ::close(listen_fd_);
         listen_fd_ = -1;

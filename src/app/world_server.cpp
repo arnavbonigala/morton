@@ -510,6 +510,14 @@ void WorldServer::run() {
     }
 }
 
+u32 WorldServer::resident_player_count() const {
+    u32 total = 0;
+    for (const auto& entry : players_) {
+        if (!entry.second.redirecting) ++total;
+    }
+    return total;
+}
+
 f64 WorldServer::tick_p99_ms() const {
     return tick_histogram_ == nullptr ? 0.0 : tick_histogram_->p99() * 1000.0;
 }

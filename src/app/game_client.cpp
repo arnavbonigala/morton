@@ -20,8 +20,13 @@ bool GameClient::build_credential(ConnectCredential::Kind kind, u64 token,
 bool GameClient::request_session() {
     if (!config_.matchmaker.valid()) return false;
 
-    HttpFetch response = http_fetch(config_.matchmaker, "POST",
-                                    "/session?player=" + config_.player_id);
+    HttpFetch response;
+    for (u32 attempt = 0; attempt < 3; ++attempt) {
+        response = http_fetch(config_.matchmaker, "POST",
+                              "/session?player=" + config_.player_id);
+        if (response.ok || response.status != 0) break;
+        sleep_us(50000ull * (attempt + 1));
+    }
     if (!response.ok) {
         MORTON_LOG_WARN("matchmaker rejected %s: %s", config_.player_id.c_str(),
                         response.error.empty() ? response.body.c_str() : response.error.c_str());

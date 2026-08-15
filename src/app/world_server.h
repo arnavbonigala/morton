@@ -104,6 +104,10 @@ public:
     Address udp_address() const { return connections_.local_address(); }
     Address http_address() const { return http_.local_address(); }
     u32 player_count() const { return static_cast<u32>(players_.size()); }
+
+    /// Players this shard still owns, excluding those already handed to another
+    /// shard and only held open until their redirect grace expires.
+    u32 resident_player_count() const;
     f64 tick_p99_ms() const;
 
     const WorldPlayer* player_by_id(const std::string& player_id) const;
