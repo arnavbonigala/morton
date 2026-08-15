@@ -31,6 +31,10 @@ bool WorldServer::start(const WorldServerConfig& config) {
     MetricsRegistry& metrics = MetricsRegistry::instance();
     metrics.set_label("shard", config_.shard_id);
     tick_histogram_ = metrics.histogram("morton_tick_seconds", "simulation tick duration");
+    step_histogram_ = metrics.histogram("morton_step_seconds", "movement integration duration");
+    replicate_histogram_ =
+        metrics.histogram("morton_replicate_seconds", "snapshot encode and send duration");
+    net_histogram_ = metrics.histogram("morton_net_seconds", "socket receive and flush duration");
     snapshot_histogram_ =
         metrics.histogram("morton_snapshot_bytes", "per-client snapshot size in bytes");
     snapshots_counter_ = metrics.counter("morton_snapshots_total", "snapshots sent");
@@ -96,8 +100,12 @@ bool WorldServer::start(const WorldServerConfig& config) {
         shard.id = config_.shard_id;
         shard.capacity = config_.capacity;
         shard.regions = config_.regions;
-        shard.udp_endpoint = connections_.local_address().to_string();
-        shard.http_endpoint = http_.local_address().to_string();
+        shard.udp_endpoint = config_.advertise_udp.empty()
+                                 ? connections_.local_address().to_string()
+                                 : config_.advertise_udp;
+        shard.http_endpoint = config_.advertise_http.empty()
+                                  ? http_.local_address().to_string()
+                                  : config_.advertise_http;
         if (!coordinator_.start(shard, config_.redis, config_.key_prefix)) {
             http_.stop();
             connections_.stop();
@@ -496,12 +504,30 @@ void WorldServer::expire_ghosts(u64 now_ms) {
 void WorldServer::tick(u64 now) {
     u64 started = now_us();
 
+    u64 mark = started;
     connections_.receive(now);
+    u64 received_at = now_us();
+
     world_.step();
+    u64 stepped_at = now_us();
+    if (step_histogram_) {
+        step_histogram_->record(static_cast<f64>(stepped_at - received_at) / 1000000.0);
+    }
+
     replicate(now);
+    u64 replicated_at = now_us();
+    if (replicate_histogram_) {
+        replicate_histogram_->record(static_cast<f64>(replicated_at - stepped_at) / 1000000.0);
+    }
+
     check_migrations();
     connections_.timeout_connections(now);
     connections_.flush(now);
+    if (net_histogram_) {
+        net_histogram_->record(
+            static_cast<f64>(received_at - mark + now_us() - replicated_at) / 1000000.0);
+    }
+
     refresh_cluster(now);
     publish_viewer_state(now);
 

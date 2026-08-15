@@ -47,6 +47,11 @@ struct WorldServerConfig {
 
     u64 connection_timeout_us = 5000000;
     bool advertise = true;
+
+    /// Endpoints peers should dial, when they differ from the bound ones: a
+    /// container binds 0.0.0.0 but must be reached by its service name.
+    std::string advertise_udp;
+    std::string advertise_http;
 };
 
 struct WorldPlayer {
@@ -170,6 +175,9 @@ private:
     u64 last_viewer_publish_us_ = 0;
 
     Histogram* tick_histogram_ = nullptr;
+    Histogram* step_histogram_ = nullptr;
+    Histogram* replicate_histogram_ = nullptr;
+    Histogram* net_histogram_ = nullptr;
     Histogram* snapshot_histogram_ = nullptr;
     Counter* snapshots_counter_ = nullptr;
     Counter* snapshot_bytes_counter_ = nullptr;
