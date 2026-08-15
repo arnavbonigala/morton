@@ -34,6 +34,10 @@ bool WorldServer::start(const WorldServerConfig& config) {
     step_histogram_ = metrics.histogram("morton_step_seconds", "movement integration duration");
     replicate_histogram_ =
         metrics.histogram("morton_replicate_seconds", "snapshot encode and send duration");
+    encode_histogram_ =
+        metrics.histogram("morton_encode_seconds", "snapshot encode duration, all clients");
+    send_histogram_ =
+        metrics.histogram("morton_send_seconds", "snapshot enqueue duration, all clients");
     net_histogram_ = metrics.histogram("morton_net_seconds", "socket receive and flush duration");
     snapshot_histogram_ =
         metrics.histogram("morton_snapshot_bytes", "per-client snapshot size in bytes");
@@ -382,24 +386,34 @@ void WorldServer::replicate(u64 now_us) {
     u32 capacity = std::min<u32>(config_.interest.max_snapshot_bytes,
                                  kMaxDatagramSize - 64 - kSnapshotChannelBytes);
 
+    u64 encode_us = 0;
+    u64 send_us = 0;
+
     for (auto& [client, player] : players_) {
         if (player.redirecting) continue;
         Connection* connection = connections_.find(client);
         if (connection == nullptr) continue;
 
         scratch_[0] = static_cast<u8>(Channel::kSnapshot);
+        u64 encode_started = morton::now_us();
         u32 size = player.replication.encode(world_, player.entity, player.last_input_sequence,
                                              scratch_.data() + kSnapshotChannelBytes, capacity);
+        u64 encoded_at = morton::now_us();
+        encode_us += encoded_at - encode_started;
         if (size == 0) continue;
 
         connections_.send_payload(*connection, scratch_.data(), size + kSnapshotChannelBytes,
                                   now_us);
+        send_us += morton::now_us() - encoded_at;
         ++stats_.snapshots_sent;
         stats_.snapshot_bytes += size;
         if (snapshots_counter_) snapshots_counter_->add();
         if (snapshot_bytes_counter_) snapshot_bytes_counter_->add(size);
         if (snapshot_histogram_) snapshot_histogram_->record(static_cast<f64>(size));
     }
+
+    if (encode_histogram_) encode_histogram_->record(static_cast<f64>(encode_us) / 1e6);
+    if (send_histogram_) send_histogram_->record(static_cast<f64>(send_us) / 1e6);
 }
 
 void WorldServer::check_migrations() {

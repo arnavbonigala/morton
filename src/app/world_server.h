@@ -177,6 +177,8 @@ private:
     Histogram* tick_histogram_ = nullptr;
     Histogram* step_histogram_ = nullptr;
     Histogram* replicate_histogram_ = nullptr;
+    Histogram* encode_histogram_ = nullptr;
+    Histogram* send_histogram_ = nullptr;
     Histogram* net_histogram_ = nullptr;
     Histogram* snapshot_histogram_ = nullptr;
     Counter* snapshots_counter_ = nullptr;
