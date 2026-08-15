@@ -180,13 +180,22 @@ bool ClusterRegistry::clear_presence(const std::string& player_id) {
     return redis_.flush(nullptr);
 }
 
+void ClusterRegistry::queue_transfer_presence(const std::string& player_id,
+                                              const std::string& from_shard,
+                                              const std::string& to_shard, u32 region,
+                                              u32 ttl_ms) {
+    redis_.queue({"EVAL", kTransferScript, "3", presence_key(player_id), roster_key(from_shard),
+                  roster_key(to_shard), from_shard, to_shard, std::to_string(region),
+                  std::to_string(wall_ms()), std::to_string(ttl_ms), player_id});
+}
+
 bool ClusterRegistry::transfer_presence(const std::string& player_id,
                                         const std::string& from_shard,
                                         const std::string& to_shard, u32 region, u32 ttl_ms) {
-    RedisReply reply = redis_.command({"EVAL", kTransferScript, "3", presence_key(player_id),
-                                       roster_key(from_shard), roster_key(to_shard), from_shard,
-                                       to_shard, std::to_string(region), std::to_string(wall_ms()),
-                                       std::to_string(ttl_ms), player_id});
+    queue_transfer_presence(player_id, from_shard, to_shard, region, ttl_ms);
+    std::vector<RedisReply> replies;
+    if (!redis_.flush(&replies) || replies.empty()) return false;
+    const RedisReply& reply = replies.front();
     if (reply.is_error()) {
         MORTON_LOG_WARN("presence transfer failed: %s", reply.str.c_str());
         return false;

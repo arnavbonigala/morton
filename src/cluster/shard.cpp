@@ -140,14 +140,7 @@ bool ShardCoordinator::plan_handoff(const std::string& player_id, u32 current_re
     ticket.velocity = velocity;
     ticket.last_input_sequence = last_input_sequence;
 
-    if (!tickets_.publish(ticket, config_.ticket_ttl_ms)) {
-        ++handoffs_declined_;
-        return false;
-    }
-
-    if (!registry_.transfer_presence(player_id, config_.id, owner, target_region,
-                                     config_.presence_ttl_ms)) {
-        tickets_.discard(ticket.token);
+    if (!tickets_.publish_and_transfer(ticket, config_.ticket_ttl_ms, config_.presence_ttl_ms)) {
         ++handoffs_declined_;
         return false;
     }

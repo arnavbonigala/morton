@@ -85,22 +85,36 @@ std::string MigrationStore::key(u64 token) const {
     return registry_->prefix() + ":ticket:" + std::to_string(token);
 }
 
-bool MigrationStore::publish(const MigrationTicket& ticket, u32 ttl_ms) {
+bool MigrationStore::publish_and_transfer(const MigrationTicket& ticket, u32 ttl_ms,
+                                          u32 presence_ttl_ms) {
     MigrationTicket stamped = ticket;
     if (stamped.issued_ms == 0) stamped.issued_ms = wall_ms();
 
     std::string blob = encode_migration_ticket(stamped);
     if (blob.empty()) {
-        MORTON_LOG_ERROR("migration ticket for %s exceeds %u bytes",
-                         stamped.player_id.c_str(), kMigrationTicketBytes);
+        MORTON_LOG_ERROR("migration ticket for %s exceeds %u bytes", stamped.player_id.c_str(),
+                         kMigrationTicketBytes);
         return false;
     }
 
-    RedisReply reply = registry_->client().command(
-        {"SET", key(stamped.token), blob, "PX", std::to_string(ttl_ms), "NX"});
-    if (!reply.ok()) return false;
+    RedisClient& client = registry_->client();
+    client.queue({"SET", key(stamped.token), blob, "PX", std::to_string(ttl_ms), "NX"});
+    registry_->queue_transfer_presence(stamped.player_id, stamped.from_shard, stamped.to_shard,
+                                       stamped.region, presence_ttl_ms);
 
+    std::vector<RedisReply> replies;
+    if (!client.flush(&replies) || replies.size() != 2) return false;
+
+    if (!replies[0].ok()) return false;
     ++issued_;
+
+    if (replies[1].is_error()) {
+        MORTON_LOG_WARN("presence transfer failed: %s", replies[1].str.c_str());
+    }
+    if (replies[1].type != RedisType::kInteger || replies[1].integer != 1) {
+        discard(stamped.token);
+        return false;
+    }
     return true;
 }
 

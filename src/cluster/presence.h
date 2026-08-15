@@ -62,6 +62,11 @@ public:
     bool transfer_presence(const std::string& player_id, const std::string& from_shard,
                            const std::string& to_shard, u32 region, u32 ttl_ms);
 
+    /// Queues the transfer so it can share a round trip with the caller's other
+    /// commands. The reply is a 1 when the transfer took.
+    void queue_transfer_presence(const std::string& player_id, const std::string& from_shard,
+                                 const std::string& to_shard, u32 region, u32 ttl_ms);
+
     /// Claims exclusive ownership of a player id for `shard_id`. Fails if a
     /// different live shard already owns it.
     bool claim_presence(const PresenceRecord& record, u32 ttl_ms, std::string* current_owner);

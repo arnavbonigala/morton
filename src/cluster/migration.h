@@ -43,7 +43,12 @@ class MigrationStore {
 public:
     explicit MigrationStore(ClusterRegistry* registry) : registry_(registry) {}
 
-    bool publish(const MigrationTicket& ticket, u32 ttl_ms);
+    /// Publishes the ticket and moves presence to the receiving shard in a
+    /// single round trip, discarding the ticket if the transfer loses its race.
+    /// The tick loop pays this latency inline, so the two commands must not
+    /// cost two round trips.
+    bool publish_and_transfer(const MigrationTicket& ticket, u32 ttl_ms, u32 presence_ttl_ms);
+
     bool redeem(u64 token, MigrationTicket* out);
     bool discard(u64 token);
 
