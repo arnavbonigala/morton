@@ -1,6 +1,6 @@
 #pragma once
 #include <array>
-#include <unordered_map>
+
 #include <vector>
 
 #include "core/types.h"
@@ -143,7 +143,14 @@ private:
     Tick last_acked_tick_ = 0;
     bool has_acked_ = false;
 
-    std::unordered_map<EntityId, f32> priority_;
+    struct Carried {
+        EntityId id;
+        f32 priority;
+    };
+
+    std::vector<Carried> priority_;
+    std::vector<Carried> priority_next_;
+    std::vector<f32> candidate_priority_;
     std::vector<u64> gather_;
     std::vector<EntityWireState> scratch_current_;
     std::vector<const EntityWireState*> previous_;

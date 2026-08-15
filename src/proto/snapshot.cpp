@@ -135,10 +135,22 @@ u32 ReplicationState::encode(const World& world, EntityId viewer, u32 last_input
 
     candidates_.clear();
     candidates_.reserve(scratch_current_.size());
+    candidate_priority_.assign(scratch_current_.size(), -1.f);
+
+    // Both the candidates and the carried priorities are in id order, so the
+    // starvation credit each entity has accrued is picked up by advancing one
+    // cursor rather than by hashing every id.
+    std::size_t carried_at = 0;
 
     for (u32 i = 0; i < scratch_current_.size(); ++i) {
         const EntityWireState& current = scratch_current_[i];
         const EntityWireState* previous = previous_[i];
+
+        while (carried_at < priority_.size() && priority_[carried_at].id < current.id) ++carried_at;
+        f32 carried = (carried_at < priority_.size() && priority_[carried_at].id == current.id)
+                          ? priority_[carried_at].priority
+                          : 0.f;
+
         if (previous != nullptr && current.same_state_as(*previous)) continue;
 
         Vec2 decoded(quantizers_.position.decode(current.px),
@@ -146,11 +158,10 @@ u32 ReplicationState::encode(const World& world, EntityId viewer, u32 last_input
         f32 closeness = 1.f - clampf(std::sqrt(distance_sq(decoded, eye)) / config_.aoi_radius,
                                      0.f, 1.f);
 
-        auto carried = priority_.find(current.id);
-        f32 priority = (carried != priority_.end() ? carried->second : 0.f) +
-                       closeness * config_.distance_priority_falloff + 0.01f;
+        f32 priority = carried + closeness * config_.distance_priority_falloff + 0.01f;
         if (current.id == viewer) priority += 1e6f;
 
+        candidate_priority_[i] = priority;
         candidates_.push_back({i, priority});
     }
 
@@ -270,11 +281,15 @@ u32 ReplicationState::encode(const World& world, EntityId viewer, u32 last_input
         }
     }
 
-    priority_.clear();
-    for (const Candidate& candidate : candidates_) {
-        if (sent_flags_[candidate.index]) continue;
-        priority_[scratch_current_[candidate.index].id] = candidate.priority;
+    // Walking the entities rather than the candidates leaves the carried set in
+    // id order, which is what the next encode's cursor needs; selection has
+    // permuted candidates_ by this point.
+    priority_next_.clear();
+    for (u32 i = 0; i < scratch_current_.size(); ++i) {
+        if (sent_flags_[i] || candidate_priority_[i] < 0.f) continue;
+        priority_next_.push_back({scratch_current_[i].id, candidate_priority_[i]});
     }
+    priority_.swap(priority_next_);
 
     return stats_.snapshot_bytes;
 }
