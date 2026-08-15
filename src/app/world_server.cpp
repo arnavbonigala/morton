@@ -53,6 +53,8 @@ bool WorldServer::start(const WorldServerConfig& config) {
         metrics.counter("morton_migrations_in_total", "players adopted from another shard");
     send_failures_counter_ =
         metrics.counter("morton_send_failures_total", "datagrams the kernel refused");
+    receive_drops_counter_ = metrics.counter("morton_receive_drops_total",
+                                             "datagrams dropped by a full receive queue");
     players_gauge_ = metrics.gauge("morton_players", "connected players");
     entities_gauge_ = metrics.gauge("morton_entities", "simulated entities");
 
@@ -560,6 +562,10 @@ void WorldServer::tick(u64 now) {
     u64 send_failures = connections_.socket().send_failures();
     if (send_failures_counter_) send_failures_counter_->add(send_failures - last_send_failures_);
     last_send_failures_ = send_failures;
+
+    u64 receive_drops = connections_.socket().receive_drops();
+    if (receive_drops_counter_) receive_drops_counter_->add(receive_drops - last_receive_drops_);
+    last_receive_drops_ = receive_drops;
     if (players_gauge_) players_gauge_->set(static_cast<f64>(players_.size()));
     if (entities_gauge_) entities_gauge_->set(static_cast<f64>(world_.entities().size()));
 }

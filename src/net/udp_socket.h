@@ -54,8 +54,16 @@ public:
     u64 packets_received() const { return packets_received_; }
     u64 send_failures() const { return send_failures_; }
 
+    /// Datagrams the kernel discarded because the receive queue was full.
+    ///
+    /// These never reach receive(), so without this counter an overflowing
+    /// socket is indistinguishable from a quiet network: the peer's packets
+    /// simply go unacknowledged and the loss is blamed on the wire.
+    u64 receive_drops() const { return receive_drops_; }
+
 private:
     static constexpr u32 kBatchSize = 64;
+    static constexpr u32 kControlBytes = 64;
 
     struct Pending {
         sockaddr_in address;
@@ -71,14 +79,18 @@ private:
     std::vector<u8> recv_bytes_;
     std::vector<sockaddr_in> recv_addresses_;
     std::vector<u32> recv_sizes_;
+    std::vector<u8> recv_control_;
     u32 recv_count_ = 0;
     u32 recv_next_ = 0;
+    u32 last_overflow_ = 0;
+    bool overflow_seen_ = false;
     Address local_;
     u64 bytes_sent_ = 0;
     u64 bytes_received_ = 0;
     u64 packets_sent_ = 0;
     u64 packets_received_ = 0;
     u64 send_failures_ = 0;
+    u64 receive_drops_ = 0;
 };
 
 }  // namespace morton

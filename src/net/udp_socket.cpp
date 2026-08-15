@@ -27,6 +27,10 @@ UdpSocket& UdpSocket::operator=(UdpSocket&& other) noexcept {
         packets_sent_ = other.packets_sent_;
         packets_received_ = other.packets_received_;
         send_failures_ = other.send_failures_;
+        receive_drops_ = other.receive_drops_;
+        last_overflow_ = other.last_overflow_;
+        overflow_seen_ = other.overflow_seen_;
+        recv_control_ = std::move(other.recv_control_);
         send_bytes_ = std::move(other.send_bytes_);
         send_pending_ = std::move(other.send_pending_);
         send_count_ = other.send_count_;
@@ -66,15 +70,26 @@ bool UdpSocket::open(const Address& bind_address, u32 buffer_bytes) {
         size /= 2;
     }
 
-    // Linux clamps the request to net.core.wmem_max without failing, so a shard
-    // can be sending into a buffer a fraction of the size it asked for and see
-    // the shortfall only as client side packet loss.
+    // Linux clamps the request to net.core.{w,r}mem_max without failing, so a
+    // shard can be working out of a buffer a fraction of the size it asked for
+    // and see the shortfall only as client side packet loss.
     int granted = 0;
     socklen_t granted_len = sizeof(granted);
     if (::getsockopt(fd_, SOL_SOCKET, SO_SNDBUF, &granted, &granted_len) == 0 &&
         static_cast<u32>(granted) < buffer_bytes) {
         MORTON_LOG_WARN("send buffer is %d bytes, asked for %u", granted, buffer_bytes);
     }
+    granted = 0;
+    granted_len = sizeof(granted);
+    if (::getsockopt(fd_, SOL_SOCKET, SO_RCVBUF, &granted, &granted_len) == 0 &&
+        static_cast<u32>(granted) < buffer_bytes) {
+        MORTON_LOG_WARN("receive buffer is %d bytes, asked for %u", granted, buffer_bytes);
+    }
+
+#if defined(SO_RXQ_OVFL)
+    int report_overflow = 1;
+    ::setsockopt(fd_, SOL_SOCKET, SO_RXQ_OVFL, &report_overflow, sizeof(report_overflow));
+#endif
 
     sockaddr_in sa = bind_address.to_sockaddr();
     if (::bind(fd_, reinterpret_cast<sockaddr*>(&sa), sizeof(sa)) < 0) {
@@ -111,6 +126,7 @@ void UdpSocket::close() {
     send_count_ = 0;
     recv_count_ = 0;
     recv_next_ = 0;
+    overflow_seen_ = false;
 }
 
 bool UdpSocket::send(const Address& to, const u8* data, u32 size) {
@@ -217,6 +233,7 @@ int UdpSocket::refill() {
         recv_bytes_.resize(static_cast<std::size_t>(kBatchSize) * kMaxDatagramSize);
         recv_addresses_.resize(kBatchSize);
         recv_sizes_.resize(kBatchSize);
+        recv_control_.resize(static_cast<std::size_t>(kBatchSize) * kControlBytes);
     }
 
     auto soft_error = [] {
@@ -234,12 +251,33 @@ int UdpSocket::refill() {
         messages[i].msg_hdr.msg_namelen = sizeof(sockaddr_in);
         messages[i].msg_hdr.msg_iov = &vectors[i];
         messages[i].msg_hdr.msg_iovlen = 1;
+        messages[i].msg_hdr.msg_control =
+            recv_control_.data() + static_cast<std::size_t>(i) * kControlBytes;
+        messages[i].msg_hdr.msg_controllen = kControlBytes;
     }
 
     int result = ::recvmmsg(fd_, messages, kBatchSize, MSG_DONTWAIT, nullptr);
     if (result < 0) return soft_error() ? 0 : -1;
     for (int i = 0; i < result; ++i) recv_sizes_[i] = messages[i].msg_len;
     recv_count_ = static_cast<u32>(result);
+
+#if defined(SO_RXQ_OVFL)
+    // The counter the kernel attaches is cumulative and only as fresh as the
+    // datagram carrying it, so the last message of the batch is the one worth
+    // reading. It is 32 bits and wraps, which unsigned subtraction absorbs.
+    if (recv_count_ > 0) {
+        msghdr& newest = messages[recv_count_ - 1].msg_hdr;
+        for (cmsghdr* header = CMSG_FIRSTHDR(&newest); header != nullptr;
+             header = CMSG_NXTHDR(&newest, header)) {
+            if (header->cmsg_level != SOL_SOCKET || header->cmsg_type != SO_RXQ_OVFL) continue;
+            u32 total = 0;
+            std::memcpy(&total, CMSG_DATA(header), sizeof(total));
+            if (overflow_seen_) receive_drops_ += static_cast<u32>(total - last_overflow_);
+            last_overflow_ = total;
+            overflow_seen_ = true;
+        }
+    }
+#endif
 #else
     for (u32 i = 0; i < kBatchSize; ++i) {
         socklen_t address_len = sizeof(sockaddr_in);

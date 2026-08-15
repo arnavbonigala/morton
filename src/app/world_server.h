@@ -189,6 +189,8 @@ private:
     Counter* migrations_in_counter_ = nullptr;
     Counter* send_failures_counter_ = nullptr;
     u64 last_send_failures_ = 0;
+    Counter* receive_drops_counter_ = nullptr;
+    u64 last_receive_drops_ = 0;
     Gauge* players_gauge_ = nullptr;
     Gauge* entities_gauge_ = nullptr;
 };
