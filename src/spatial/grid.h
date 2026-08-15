@@ -46,8 +46,9 @@ public:
         u16 max_y = cell_x_of(center.y + radius);
 
         for (u16 y = min_y; y <= max_y; ++y) {
+            u32 row = spread_bits(y) << 1;
             for (u16 x = min_x; x <= max_x; ++x) {
-                u32 code = morton_encode(x, y);
+                u32 code = row | spread_bits(x);
                 u32 begin = cell_start_[code];
                 u32 end = cell_start_[code + 1];
                 for (u32 i = begin; i < end; ++i) fn(sorted_[i]);
