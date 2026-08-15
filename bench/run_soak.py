@@ -10,6 +10,7 @@ slow degradation both look fine in a single scrape taken at the end.
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import threading
@@ -68,7 +69,7 @@ def container_memory():
 
 def sample():
     """One observation of the whole fleet, taken from the shards themselves."""
-    point = {"wall": round(time.time(), 1), "shards": {}}
+    point = {"wall": round(time.time(), 1), "host_load": round(os.getloadavg()[0], 2), "shards": {}}
     memory = container_memory()
     for name, port in PORTS.items():
         text = fetch(f"http://127.0.0.1:{port}/metrics")
@@ -126,7 +127,9 @@ def report(points, window):
               f"{max(entities):9.0f} {memory[0]:9.1f}M {memory[-1]:8.1f}M "
               f"{drops[-1] - drops[0]:9.0f}")
 
+    loads = [point.get("host_load", 0.0) for point in points]
     print(f"\nworst tick drift across shards: {worst_drift:.1f}%")
+    print(f"host load over the run: {min(loads):.1f} to {max(loads):.1f}")
     return worst_drift
 
 

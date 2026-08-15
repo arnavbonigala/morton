@@ -1,0 +1,1608 @@
+{
+  "samples": [
+    {
+      "wall": 1786809688.9,
+      "shards": {
+        "world-a": {
+          "tick_sum": 0.029706,
+          "tick_count": 228.0,
+          "players": 0.0,
+          "redirecting": 0.0,
+          "entities": 300.0,
+          "receive_drops": 0.0,
+          "snapshots": 0.0,
+          "memory_mib": 1.2
+        },
+        "world-b": {
+          "tick_sum": 0.02719,
+          "tick_count": 228.0,
+          "players": 0.0,
+          "redirecting": 0.0,
+          "entities": 300.0,
+          "receive_drops": 0.0,
+          "snapshots": 0.0,
+          "memory_mib": 1.2
+        },
+        "world-c": {
+          "tick_sum": 0.026371,
+          "tick_count": 229.0,
+          "players": 0.0,
+          "redirecting": 0.0,
+          "entities": 300.0,
+          "receive_drops": 0.0,
+          "snapshots": 0.0,
+          "memory_mib": 1.2
+        },
+        "world-d": {
+          "tick_sum": 0.024743,
+          "tick_count": 229.0,
+          "players": 0.0,
+          "redirecting": 0.0,
+          "entities": 300.0,
+          "receive_drops": 0.0,
+          "snapshots": 0.0,
+          "memory_mib": 1.2
+        }
+      }
+    },
+    {
+      "wall": 1786809706.2,
+      "shards": {
+        "world-a": {
+          "tick_sum": 2.790512,
+          "tick_count": 767.0,
+          "players": 478.0,
+          "redirecting": 135.0,
+          "entities": 913.0,
+          "receive_drops": 0.0,
+          "snapshots": 159401.0,
+          "memory_mib": 96.9
+        },
+        "world-b": {
+          "tick_sum": 3.730709,
+          "tick_count": 766.0,
+          "players": 518.0,
+          "redirecting": 96.0,
+          "entities": 914.0,
+          "receive_drops": 660.0,
+          "snapshots": 181782.0,
+          "memory_mib": 155.9
+        },
+        "world-c": {
+          "tick_sum": 4.518758,
+          "tick_count": 767.0,
+          "players": 526.0,
+          "redirecting": 134.0,
+          "entities": 960.0,
+          "receive_drops": 3931.0,
+          "snapshots": 197812.0,
+          "memory_mib": 164.4
+        },
+        "world-d": {
+          "tick_sum": 4.125916,
+          "tick_count": 767.0,
+          "players": 435.0,
+          "redirecting": 138.0,
+          "entities": 873.0,
+          "receive_drops": 705.0,
+          "snapshots": 183102.0,
+          "memory_mib": 135.9
+        }
+      }
+    },
+    {
+      "wall": 1786809724.1,
+      "shards": {
+        "world-a": {
+          "tick_sum": 11.428242,
+          "tick_count": 1315.0,
+          "players": 522.0,
+          "redirecting": 105.0,
+          "entities": 927.0,
+          "receive_drops": 1711.0,
+          "snapshots": 434049.0,
+          "memory_mib": 101.4
+        },
+        "world-b": {
+          "tick_sum": 12.339439,
+          "tick_count": 1315.0,
+          "players": 480.0,
+          "redirecting": 122.0,
+          "entities": 902.0,
+          "receive_drops": 1470.0,
+          "snapshots": 447858.0,
+          "memory_mib": 156.1
+        },
+        "world-c": {
+          "tick_sum": 13.715996,
+          "tick_count": 1316.0,
+          "players": 518.0,
+          "redirecting": 121.0,
+          "entities": 939.0,
+          "receive_drops": 6070.0,
+          "snapshots": 475081.0,
+          "memory_mib": 164.3
+        },
+        "world-d": {
+          "tick_sum": 12.556408,
+          "tick_count": 1316.0,
+          "players": 444.0,
+          "redirecting": 123.0,
+          "entities": 867.0,
+          "receive_drops": 1686.0,
+          "snapshots": 446171.0,
+          "memory_mib": 136.1
+        }
+      }
+    },
+    {
+      "wall": 1786809742.4,
+      "shards": {
+        "world-a": {
+          "tick_sum": 20.028231,
+          "tick_count": 1860.0,
+          "players": 507.0,
+          "redirecting": 130.0,
+          "entities": 937.0,
+          "receive_drops": 2566.0,
+          "snapshots": 705854.0,
+          "memory_mib": 101.9
+        },
+        "world-b": {
+          "tick_sum": 21.204868,
+          "tick_count": 1860.0,
+          "players": 488.0,
+          "redirecting": 136.0,
+          "entities": 924.0,
+          "receive_drops": 1597.0,
+          "snapshots": 710111.0,
+          "memory_mib": 156.2
+        },
+        "world-c": {
+          "tick_sum": 22.3657,
+          "tick_count": 1861.0,
+          "players": 494.0,
+          "redirecting": 103.0,
+          "entities": 897.0,
+          "receive_drops": 6696.0,
+          "snapshots": 744635.0,
+          "memory_mib": 164.4
+        },
+        "world-d": {
+          "tick_sum": 21.361488,
+          "tick_count": 1862.0,
+          "players": 475.0,
+          "redirecting": 150.0,
+          "entities": 925.0,
+          "receive_drops": 2942.0,
+          "snapshots": 718685.0,
+          "memory_mib": 135.8
+        }
+      }
+    },
+    {
+      "wall": 1786809760.6,
+      "shards": {
+        "world-a": {
+          "tick_sum": 28.465528,
+          "tick_count": 2407.0,
+          "players": 474.0,
+          "redirecting": 111.0,
+          "entities": 885.0,
+          "receive_drops": 2959.0,
+          "snapshots": 974108.0,
+          "memory_mib": 101.7
+        },
+        "world-b": {
+          "tick_sum": 30.035033,
+          "tick_count": 2407.0,
+          "players": 514.0,
+          "redirecting": 126.0,
+          "entities": 940.0,
+          "receive_drops": 1867.0,
+          "snapshots": 975213.0,
+          "memory_mib": 156.6
+        },
+        "world-c": {
+          "tick_sum": 31.17982,
+          "tick_count": 2408.0,
+          "players": 485.0,
+          "redirecting": 117.0,
+          "entities": 902.0,
+          "receive_drops": 7624.0,
+          "snapshots": 1022274.0,
+          "memory_mib": 164.9
+        },
+        "world-d": {
+          "tick_sum": 29.75983,
+          "tick_count": 2408.0,
+          "players": 488.0,
+          "redirecting": 128.0,
+          "entities": 916.0,
+          "receive_drops": 3641.0,
+          "snapshots": 984658.0,
+          "memory_mib": 135.8
+        }
+      }
+    },
+    {
+      "wall": 1786809778.8,
+      "shards": {
+        "world-a": {
+          "tick_sum": 37.178907,
+          "tick_count": 2948.0,
+          "players": 486.0,
+          "redirecting": 130.0,
+          "entities": 916.0,
+          "receive_drops": 3733.0,
+          "snapshots": 1245190.0,
+          "memory_mib": 101.0
+        },
+        "world-b": {
+          "tick_sum": 38.833324,
+          "tick_count": 2948.0,
+          "players": 485.0,
+          "redirecting": 138.0,
+          "entities": 923.0,
+          "receive_drops": 2999.0,
+          "snapshots": 1239683.0,
+          "memory_mib": 156.2
+        },
+        "world-c": {
+          "tick_sum": 39.60356,
+          "tick_count": 2949.0,
+          "players": 457.0,
+          "redirecting": 146.0,
+          "entities": 903.0,
+          "receive_drops": 8690.0,
+          "snapshots": 1286038.0,
+          "memory_mib": 164.6
+        },
+        "world-d": {
+          "tick_sum": 38.289204,
+          "tick_count": 2949.0,
+          "players": 527.0,
+          "redirecting": 123.0,
+          "entities": 950.0,
+          "receive_drops": 4517.0,
+          "snapshots": 1252296.0,
+          "memory_mib": 136.4
+        }
+      }
+    },
+    {
+      "wall": 1786809796.9,
+      "shards": {
+        "world-a": {
+          "tick_sum": 45.663668,
+          "tick_count": 3493.0,
+          "players": 505.0,
+          "redirecting": 141.0,
+          "entities": 946.0,
+          "receive_drops": 4411.0,
+          "snapshots": 1509470.0,
+          "memory_mib": 103.0
+        },
+        "world-b": {
+          "tick_sum": 48.066953,
+          "tick_count": 3493.0,
+          "players": 474.0,
+          "redirecting": 119.0,
+          "entities": 893.0,
+          "receive_drops": 4051.0,
+          "snapshots": 1506702.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 48.466459,
+          "tick_count": 3494.0,
+          "players": 505.0,
+          "redirecting": 120.0,
+          "entities": 925.0,
+          "receive_drops": 9635.0,
+          "snapshots": 1557465.0,
+          "memory_mib": 164.6
+        },
+        "world-d": {
+          "tick_sum": 46.940831,
+          "tick_count": 3494.0,
+          "players": 466.0,
+          "redirecting": 136.0,
+          "entities": 902.0,
+          "receive_drops": 4834.0,
+          "snapshots": 1524941.0,
+          "memory_mib": 135.7
+        }
+      }
+    },
+    {
+      "wall": 1786809815.1,
+      "shards": {
+        "world-a": {
+          "tick_sum": 54.498943,
+          "tick_count": 4042.0,
+          "players": 492.0,
+          "redirecting": 135.0,
+          "entities": 927.0,
+          "receive_drops": 5559.0,
+          "snapshots": 1783967.0,
+          "memory_mib": 103.5
+        },
+        "world-b": {
+          "tick_sum": 57.09521,
+          "tick_count": 4042.0,
+          "players": 491.0,
+          "redirecting": 139.0,
+          "entities": 930.0,
+          "receive_drops": 4426.0,
+          "snapshots": 1777629.0,
+          "memory_mib": 156.1
+        },
+        "world-c": {
+          "tick_sum": 57.440613,
+          "tick_count": 4043.0,
+          "players": 523.0,
+          "redirecting": 116.0,
+          "entities": 939.0,
+          "receive_drops": 10481.0,
+          "snapshots": 1834327.0,
+          "memory_mib": 164.3
+        },
+        "world-d": {
+          "tick_sum": 55.016274,
+          "tick_count": 4043.0,
+          "players": 457.0,
+          "redirecting": 127.0,
+          "entities": 884.0,
+          "receive_drops": 5186.0,
+          "snapshots": 1784671.0,
+          "memory_mib": 135.8
+        }
+      }
+    },
+    {
+      "wall": 1786809833.3,
+      "shards": {
+        "world-a": {
+          "tick_sum": 61.657959,
+          "tick_count": 4575.0,
+          "players": 458.0,
+          "redirecting": 122.0,
+          "entities": 880.0,
+          "receive_drops": 6300.0,
+          "snapshots": 2037888.0,
+          "memory_mib": 103.1
+        },
+        "world-b": {
+          "tick_sum": 64.523211,
+          "tick_count": 4575.0,
+          "players": 519.0,
+          "redirecting": 126.0,
+          "entities": 945.0,
+          "receive_drops": 4948.0,
+          "snapshots": 2036001.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 64.878819,
+          "tick_count": 4576.0,
+          "players": 464.0,
+          "redirecting": 139.0,
+          "entities": 903.0,
+          "receive_drops": 11715.0,
+          "snapshots": 2103282.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 62.347954,
+          "tick_count": 4576.0,
+          "players": 518.0,
+          "redirecting": 139.0,
+          "entities": 957.0,
+          "receive_drops": 5372.0,
+          "snapshots": 2054695.0,
+          "memory_mib": 136.0
+        }
+      }
+    },
+    {
+      "wall": 1786809851.1,
+      "shards": {
+        "world-a": {
+          "tick_sum": 66.075156,
+          "tick_count": 5108.0,
+          "players": 471.0,
+          "redirecting": 125.0,
+          "entities": 896.0,
+          "receive_drops": 6300.0,
+          "snapshots": 2297272.0,
+          "memory_mib": 103.1
+        },
+        "world-b": {
+          "tick_sum": 68.700382,
+          "tick_count": 5108.0,
+          "players": 487.0,
+          "redirecting": 130.0,
+          "entities": 917.0,
+          "receive_drops": 4948.0,
+          "snapshots": 2298998.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 69.15971,
+          "tick_count": 5109.0,
+          "players": 517.0,
+          "redirecting": 122.0,
+          "entities": 939.0,
+          "receive_drops": 11715.0,
+          "snapshots": 2371363.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 66.537432,
+          "tick_count": 5109.0,
+          "players": 491.0,
+          "redirecting": 118.0,
+          "entities": 909.0,
+          "receive_drops": 5372.0,
+          "snapshots": 2316692.0,
+          "memory_mib": 135.7
+        }
+      }
+    },
+    {
+      "wall": 1786809868.8,
+      "shards": {
+        "world-a": {
+          "tick_sum": 70.530949,
+          "tick_count": 5630.0,
+          "players": 504.0,
+          "redirecting": 117.0,
+          "entities": 921.0,
+          "receive_drops": 6300.0,
+          "snapshots": 2558943.0,
+          "memory_mib": 103.1
+        },
+        "world-b": {
+          "tick_sum": 72.72054,
+          "tick_count": 5630.0,
+          "players": 512.0,
+          "redirecting": 132.0,
+          "entities": 944.0,
+          "receive_drops": 4948.0,
+          "snapshots": 2554744.0,
+          "memory_mib": 156.1
+        },
+        "world-c": {
+          "tick_sum": 73.29565,
+          "tick_count": 5631.0,
+          "players": 440.0,
+          "redirecting": 136.0,
+          "entities": 876.0,
+          "receive_drops": 11715.0,
+          "snapshots": 2628853.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 70.609863,
+          "tick_count": 5631.0,
+          "players": 502.0,
+          "redirecting": 125.0,
+          "entities": 927.0,
+          "receive_drops": 5372.0,
+          "snapshots": 2572744.0,
+          "memory_mib": 135.7
+        }
+      }
+    },
+    {
+      "wall": 1786809886.2,
+      "shards": {
+        "world-a": {
+          "tick_sum": 74.959054,
+          "tick_count": 6164.0,
+          "players": 493.0,
+          "redirecting": 96.0,
+          "entities": 889.0,
+          "receive_drops": 6392.0,
+          "snapshots": 2815861.0,
+          "memory_mib": 103.1
+        },
+        "world-b": {
+          "tick_sum": 76.965959,
+          "tick_count": 6164.0,
+          "players": 474.0,
+          "redirecting": 122.0,
+          "entities": 896.0,
+          "receive_drops": 4948.0,
+          "snapshots": 2820539.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 77.471709,
+          "tick_count": 6165.0,
+          "players": 502.0,
+          "redirecting": 123.0,
+          "entities": 925.0,
+          "receive_drops": 11729.0,
+          "snapshots": 2888992.0,
+          "memory_mib": 164.4
+        },
+        "world-d": {
+          "tick_sum": 75.080543,
+          "tick_count": 6165.0,
+          "players": 496.0,
+          "redirecting": 134.0,
+          "entities": 930.0,
+          "receive_drops": 5410.0,
+          "snapshots": 2844436.0,
+          "memory_mib": 135.7
+        }
+      }
+    },
+    {
+      "wall": 1786809904.0,
+      "shards": {
+        "world-a": {
+          "tick_sum": 79.245518,
+          "tick_count": 6697.0,
+          "players": 489.0,
+          "redirecting": 145.0,
+          "entities": 934.0,
+          "receive_drops": 6392.0,
+          "snapshots": 3078929.0,
+          "memory_mib": 103.1
+        },
+        "world-b": {
+          "tick_sum": 80.944796,
+          "tick_count": 6697.0,
+          "players": 482.0,
+          "redirecting": 129.0,
+          "entities": 911.0,
+          "receive_drops": 4948.0,
+          "snapshots": 3082937.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 81.839023,
+          "tick_count": 6698.0,
+          "players": 514.0,
+          "redirecting": 133.0,
+          "entities": 947.0,
+          "receive_drops": 11729.0,
+          "snapshots": 3154688.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 79.430035,
+          "tick_count": 6698.0,
+          "players": 472.0,
+          "redirecting": 137.0,
+          "entities": 909.0,
+          "receive_drops": 5410.0,
+          "snapshots": 3105533.0,
+          "memory_mib": 135.7
+        }
+      }
+    },
+    {
+      "wall": 1786809921.8,
+      "shards": {
+        "world-a": {
+          "tick_sum": 83.800828,
+          "tick_count": 7230.0,
+          "players": 489.0,
+          "redirecting": 127.0,
+          "entities": 916.0,
+          "receive_drops": 6392.0,
+          "snapshots": 3344666.0,
+          "memory_mib": 103.1
+        },
+        "world-b": {
+          "tick_sum": 85.18164,
+          "tick_count": 7230.0,
+          "players": 464.0,
+          "redirecting": 134.0,
+          "entities": 898.0,
+          "receive_drops": 4948.0,
+          "snapshots": 3348278.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 85.993407,
+          "tick_count": 7231.0,
+          "players": 484.0,
+          "redirecting": 147.0,
+          "entities": 931.0,
+          "receive_drops": 11729.0,
+          "snapshots": 3415840.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 83.614799,
+          "tick_count": 7231.0,
+          "players": 521.0,
+          "redirecting": 115.0,
+          "entities": 936.0,
+          "receive_drops": 5410.0,
+          "snapshots": 3366190.0,
+          "memory_mib": 135.7
+        }
+      }
+    },
+    {
+      "wall": 1786809939.6,
+      "shards": {
+        "world-a": {
+          "tick_sum": 88.396231,
+          "tick_count": 7763.0,
+          "players": 480.0,
+          "redirecting": 160.0,
+          "entities": 940.0,
+          "receive_drops": 6392.0,
+          "snapshots": 3610459.0,
+          "memory_mib": 102.9
+        },
+        "world-b": {
+          "tick_sum": 89.389305,
+          "tick_count": 7763.0,
+          "players": 503.0,
+          "redirecting": 138.0,
+          "entities": 941.0,
+          "receive_drops": 4948.0,
+          "snapshots": 3615656.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 90.014786,
+          "tick_count": 7764.0,
+          "players": 482.0,
+          "redirecting": 136.0,
+          "entities": 918.0,
+          "receive_drops": 11729.0,
+          "snapshots": 3677462.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 87.56021,
+          "tick_count": 7764.0,
+          "players": 501.0,
+          "redirecting": 93.0,
+          "entities": 894.0,
+          "receive_drops": 5410.0,
+          "snapshots": 3624332.0,
+          "memory_mib": 135.7
+        }
+      }
+    },
+    {
+      "wall": 1786809957.3,
+      "shards": {
+        "world-a": {
+          "tick_sum": 92.417512,
+          "tick_count": 8270.0,
+          "players": 512.0,
+          "redirecting": 107.0,
+          "entities": 919.0,
+          "receive_drops": 6392.0,
+          "snapshots": 3849597.0,
+          "memory_mib": 102.9
+        },
+        "world-b": {
+          "tick_sum": 93.350804,
+          "tick_count": 8270.0,
+          "players": 494.0,
+          "redirecting": 137.0,
+          "entities": 931.0,
+          "receive_drops": 4948.0,
+          "snapshots": 3866986.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 93.982911,
+          "tick_count": 8271.0,
+          "players": 458.0,
+          "redirecting": 120.0,
+          "entities": 878.0,
+          "receive_drops": 11729.0,
+          "snapshots": 3932370.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 91.560846,
+          "tick_count": 8271.0,
+          "players": 506.0,
+          "redirecting": 129.0,
+          "entities": 935.0,
+          "receive_drops": 5410.0,
+          "snapshots": 3880937.0,
+          "memory_mib": 135.7
+        }
+      }
+    },
+    {
+      "wall": 1786809974.2,
+      "shards": {
+        "world-a": {
+          "tick_sum": 96.918496,
+          "tick_count": 8803.0,
+          "players": 515.0,
+          "redirecting": 139.0,
+          "entities": 954.0,
+          "receive_drops": 6402.0,
+          "snapshots": 4110069.0,
+          "memory_mib": 102.9
+        },
+        "world-b": {
+          "tick_sum": 97.775171,
+          "tick_count": 8803.0,
+          "players": 500.0,
+          "redirecting": 133.0,
+          "entities": 933.0,
+          "receive_drops": 4948.0,
+          "snapshots": 4131322.0,
+          "memory_mib": 156.2
+        },
+        "world-c": {
+          "tick_sum": 98.399766,
+          "tick_count": 8804.0,
+          "players": 508.0,
+          "redirecting": 145.0,
+          "entities": 953.0,
+          "receive_drops": 11802.0,
+          "snapshots": 4197975.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 95.903617,
+          "tick_count": 8804.0,
+          "players": 442.0,
+          "redirecting": 130.0,
+          "entities": 872.0,
+          "receive_drops": 5410.0,
+          "snapshots": 4143933.0,
+          "memory_mib": 135.9
+        }
+      }
+    },
+    {
+      "wall": 1786809992.0,
+      "shards": {
+        "world-a": {
+          "tick_sum": 101.379148,
+          "tick_count": 9338.0,
+          "players": 509.0,
+          "redirecting": 116.0,
+          "entities": 925.0,
+          "receive_drops": 6402.0,
+          "snapshots": 4369658.0,
+          "memory_mib": 102.9
+        },
+        "world-b": {
+          "tick_sum": 103.127086,
+          "tick_count": 9338.0,
+          "players": 530.0,
+          "redirecting": 120.0,
+          "entities": 950.0,
+          "receive_drops": 4948.0,
+          "snapshots": 4400406.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 103.454481,
+          "tick_count": 9339.0,
+          "players": 460.0,
+          "redirecting": 126.0,
+          "entities": 886.0,
+          "receive_drops": 11802.0,
+          "snapshots": 4457877.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 101.031095,
+          "tick_count": 9339.0,
+          "players": 463.0,
+          "redirecting": 134.0,
+          "entities": 897.0,
+          "receive_drops": 5410.0,
+          "snapshots": 4411267.0,
+          "memory_mib": 136.0
+        }
+      }
+    },
+    {
+      "wall": 1786810009.9,
+      "shards": {
+        "world-a": {
+          "tick_sum": 106.824069,
+          "tick_count": 9875.0,
+          "players": 541.0,
+          "redirecting": 129.0,
+          "entities": 970.0,
+          "receive_drops": 6455.0,
+          "snapshots": 4633012.0,
+          "memory_mib": 103.2
+        },
+        "world-b": {
+          "tick_sum": 109.317864,
+          "tick_count": 9875.0,
+          "players": 473.0,
+          "redirecting": 138.0,
+          "entities": 911.0,
+          "receive_drops": 5155.0,
+          "snapshots": 4664314.0,
+          "memory_mib": 156.2
+        },
+        "world-c": {
+          "tick_sum": 109.172584,
+          "tick_count": 9876.0,
+          "players": 491.0,
+          "redirecting": 131.0,
+          "entities": 922.0,
+          "receive_drops": 11802.0,
+          "snapshots": 4726200.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 106.561359,
+          "tick_count": 9876.0,
+          "players": 457.0,
+          "redirecting": 114.0,
+          "entities": 871.0,
+          "receive_drops": 5465.0,
+          "snapshots": 4674648.0,
+          "memory_mib": 135.7
+        }
+      }
+    },
+    {
+      "wall": 1786810027.7,
+      "shards": {
+        "world-a": {
+          "tick_sum": 114.787403,
+          "tick_count": 10419.0,
+          "players": 480.0,
+          "redirecting": 135.0,
+          "entities": 915.0,
+          "receive_drops": 6717.0,
+          "snapshots": 4900690.0,
+          "memory_mib": 109.3
+        },
+        "world-b": {
+          "tick_sum": 118.363891,
+          "tick_count": 10419.0,
+          "players": 504.0,
+          "redirecting": 114.0,
+          "entities": 918.0,
+          "receive_drops": 6113.0,
+          "snapshots": 4934524.0,
+          "memory_mib": 156.1
+        },
+        "world-c": {
+          "tick_sum": 117.410058,
+          "tick_count": 10420.0,
+          "players": 520.0,
+          "redirecting": 109.0,
+          "entities": 929.0,
+          "receive_drops": 11953.0,
+          "snapshots": 4991462.0,
+          "memory_mib": 164.2
+        },
+        "world-d": {
+          "tick_sum": 114.850249,
+          "tick_count": 10420.0,
+          "players": 456.0,
+          "redirecting": 147.0,
+          "entities": 903.0,
+          "receive_drops": 5892.0,
+          "snapshots": 4944199.0,
+          "memory_mib": 135.9
+        }
+      }
+    },
+    {
+      "wall": 1786810045.9,
+      "shards": {
+        "world-a": {
+          "tick_sum": 124.202078,
+          "tick_count": 10969.0,
+          "players": 462.0,
+          "redirecting": 126.0,
+          "entities": 888.0,
+          "receive_drops": 8778.0,
+          "snapshots": 5172781.0,
+          "memory_mib": 109.6
+        },
+        "world-b": {
+          "tick_sum": 128.097926,
+          "tick_count": 10969.0,
+          "players": 490.0,
+          "redirecting": 129.0,
+          "entities": 919.0,
+          "receive_drops": 7057.0,
+          "snapshots": 5204992.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 126.593434,
+          "tick_count": 10971.0,
+          "players": 493.0,
+          "redirecting": 98.0,
+          "entities": 891.0,
+          "receive_drops": 12431.0,
+          "snapshots": 5263126.0,
+          "memory_mib": 164.4
+        },
+        "world-d": {
+          "tick_sum": 124.176077,
+          "tick_count": 10970.0,
+          "players": 523.0,
+          "redirecting": 125.0,
+          "entities": 948.0,
+          "receive_drops": 7313.0,
+          "snapshots": 5215679.0,
+          "memory_mib": 136.1
+        }
+      }
+    },
+    {
+      "wall": 1786810064.3,
+      "shards": {
+        "world-a": {
+          "tick_sum": 132.395278,
+          "tick_count": 11516.0,
+          "players": 462.0,
+          "redirecting": 135.0,
+          "entities": 897.0,
+          "receive_drops": 9657.0,
+          "snapshots": 5446216.0,
+          "memory_mib": 109.6
+        },
+        "world-b": {
+          "tick_sum": 137.01468,
+          "tick_count": 11516.0,
+          "players": 522.0,
+          "redirecting": 122.0,
+          "entities": 944.0,
+          "receive_drops": 7866.0,
+          "snapshots": 5475826.0,
+          "memory_mib": 156.3
+        },
+        "world-c": {
+          "tick_sum": 134.627692,
+          "tick_count": 11517.0,
+          "players": 443.0,
+          "redirecting": 122.0,
+          "entities": 865.0,
+          "receive_drops": 12649.0,
+          "snapshots": 5529251.0,
+          "memory_mib": 164.2
+        },
+        "world-d": {
+          "tick_sum": 132.456882,
+          "tick_count": 11517.0,
+          "players": 526.0,
+          "redirecting": 128.0,
+          "entities": 954.0,
+          "receive_drops": 8386.0,
+          "snapshots": 5483780.0,
+          "memory_mib": 136.6
+        }
+      }
+    },
+    {
+      "wall": 1786810082.5,
+      "shards": {
+        "world-a": {
+          "tick_sum": 140.86611,
+          "tick_count": 12062.0,
+          "players": 472.0,
+          "redirecting": 136.0,
+          "entities": 908.0,
+          "receive_drops": 10173.0,
+          "snapshots": 5712725.0,
+          "memory_mib": 109.9
+        },
+        "world-b": {
+          "tick_sum": 146.604483,
+          "tick_count": 12062.0,
+          "players": 487.0,
+          "redirecting": 141.0,
+          "entities": 928.0,
+          "receive_drops": 9125.0,
+          "snapshots": 5748849.0,
+          "memory_mib": 156.4
+        },
+        "world-c": {
+          "tick_sum": 142.785266,
+          "tick_count": 12063.0,
+          "players": 474.0,
+          "redirecting": 107.0,
+          "entities": 881.0,
+          "receive_drops": 13047.0,
+          "snapshots": 5789884.0,
+          "memory_mib": 164.5
+        },
+        "world-d": {
+          "tick_sum": 141.240889,
+          "tick_count": 12063.0,
+          "players": 525.0,
+          "redirecting": 118.0,
+          "entities": 943.0,
+          "receive_drops": 9546.0,
+          "snapshots": 5758862.0,
+          "memory_mib": 136.6
+        }
+      }
+    },
+    {
+      "wall": 1786810100.6,
+      "shards": {
+        "world-a": {
+          "tick_sum": 148.455552,
+          "tick_count": 12599.0,
+          "players": 513.0,
+          "redirecting": 149.0,
+          "entities": 962.0,
+          "receive_drops": 10345.0,
+          "snapshots": 5976536.0,
+          "memory_mib": 109.6
+        },
+        "world-b": {
+          "tick_sum": 154.577218,
+          "tick_count": 12599.0,
+          "players": 485.0,
+          "redirecting": 131.0,
+          "entities": 916.0,
+          "receive_drops": 9196.0,
+          "snapshots": 6006620.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 150.643436,
+          "tick_count": 12600.0,
+          "players": 474.0,
+          "redirecting": 123.0,
+          "entities": 897.0,
+          "receive_drops": 13592.0,
+          "snapshots": 6059372.0,
+          "memory_mib": 164.3
+        },
+        "world-d": {
+          "tick_sum": 149.209484,
+          "tick_count": 12600.0,
+          "players": 498.0,
+          "redirecting": 114.0,
+          "entities": 912.0,
+          "receive_drops": 10082.0,
+          "snapshots": 6026676.0,
+          "memory_mib": 135.2
+        }
+      }
+    },
+    {
+      "wall": 1786810118.5,
+      "shards": {
+        "world-a": {
+          "tick_sum": 154.334679,
+          "tick_count": 13108.0,
+          "players": 443.0,
+          "redirecting": 115.0,
+          "entities": 858.0,
+          "receive_drops": 10345.0,
+          "snapshots": 6229749.0,
+          "memory_mib": 108.9
+        },
+        "world-b": {
+          "tick_sum": 160.812817,
+          "tick_count": 13108.0,
+          "players": 505.0,
+          "redirecting": 111.0,
+          "entities": 916.0,
+          "receive_drops": 9458.0,
+          "snapshots": 6266194.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 156.363982,
+          "tick_count": 13109.0,
+          "players": 508.0,
+          "redirecting": 118.0,
+          "entities": 926.0,
+          "receive_drops": 13642.0,
+          "snapshots": 6302611.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 155.20615,
+          "tick_count": 13109.0,
+          "players": 509.0,
+          "redirecting": 115.0,
+          "entities": 924.0,
+          "receive_drops": 10170.0,
+          "snapshots": 6276348.0,
+          "memory_mib": 135.2
+        }
+      }
+    },
+    {
+      "wall": 1786810135.5,
+      "shards": {
+        "world-a": {
+          "tick_sum": 160.347312,
+          "tick_count": 13646.0,
+          "players": 470.0,
+          "redirecting": 124.0,
+          "entities": 894.0,
+          "receive_drops": 10347.0,
+          "snapshots": 6493456.0,
+          "memory_mib": 109.1
+        },
+        "world-b": {
+          "tick_sum": 167.562291,
+          "tick_count": 13646.0,
+          "players": 502.0,
+          "redirecting": 109.0,
+          "entities": 911.0,
+          "receive_drops": 9578.0,
+          "snapshots": 6533112.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 162.013028,
+          "tick_count": 13646.0,
+          "players": 499.0,
+          "redirecting": 128.0,
+          "entities": 927.0,
+          "receive_drops": 13642.0,
+          "snapshots": 6569578.0,
+          "memory_mib": 164.2
+        },
+        "world-d": {
+          "tick_sum": 160.744598,
+          "tick_count": 13646.0,
+          "players": 491.0,
+          "redirecting": 121.0,
+          "entities": 912.0,
+          "receive_drops": 10240.0,
+          "snapshots": 6539136.0,
+          "memory_mib": 135.3
+        }
+      }
+    },
+    {
+      "wall": 1786810153.4,
+      "shards": {
+        "world-a": {
+          "tick_sum": 167.839179,
+          "tick_count": 14190.0,
+          "players": 487.0,
+          "redirecting": 128.0,
+          "entities": 915.0,
+          "receive_drops": 11240.0,
+          "snapshots": 6764056.0,
+          "memory_mib": 108.9
+        },
+        "world-b": {
+          "tick_sum": 176.042648,
+          "tick_count": 14190.0,
+          "players": 514.0,
+          "redirecting": 131.0,
+          "entities": 945.0,
+          "receive_drops": 10261.0,
+          "snapshots": 6808821.0,
+          "memory_mib": 156.0
+        },
+        "world-c": {
+          "tick_sum": 169.267401,
+          "tick_count": 14192.0,
+          "players": 482.0,
+          "redirecting": 118.0,
+          "entities": 900.0,
+          "receive_drops": 13840.0,
+          "snapshots": 6832294.0,
+          "memory_mib": 164.3
+        },
+        "world-d": {
+          "tick_sum": 168.264013,
+          "tick_count": 14192.0,
+          "players": 486.0,
+          "redirecting": 130.0,
+          "entities": 916.0,
+          "receive_drops": 10716.0,
+          "snapshots": 6804686.0,
+          "memory_mib": 135.6
+        }
+      }
+    },
+    {
+      "wall": 1786810171.7,
+      "shards": {
+        "world-a": {
+          "tick_sum": 176.987685,
+          "tick_count": 14735.0,
+          "players": 485.0,
+          "redirecting": 123.0,
+          "entities": 908.0,
+          "receive_drops": 12648.0,
+          "snapshots": 7035187.0,
+          "memory_mib": 109.1
+        },
+        "world-b": {
+          "tick_sum": 186.321446,
+          "tick_count": 14735.0,
+          "players": 507.0,
+          "redirecting": 114.0,
+          "entities": 921.0,
+          "receive_drops": 12283.0,
+          "snapshots": 7081483.0,
+          "memory_mib": 156.4
+        },
+        "world-c": {
+          "tick_sum": 178.328839,
+          "tick_count": 14735.0,
+          "players": 481.0,
+          "redirecting": 101.0,
+          "entities": 882.0,
+          "receive_drops": 14560.0,
+          "snapshots": 7096870.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 177.286414,
+          "tick_count": 14736.0,
+          "players": 499.0,
+          "redirecting": 110.0,
+          "entities": 909.0,
+          "receive_drops": 12084.0,
+          "snapshots": 7068708.0,
+          "memory_mib": 135.9
+        }
+      }
+    },
+    {
+      "wall": 1786810189.8,
+      "shards": {
+        "world-a": {
+          "tick_sum": 186.321684,
+          "tick_count": 15259.0,
+          "players": 492.0,
+          "redirecting": 113.0,
+          "entities": 905.0,
+          "receive_drops": 14299.0,
+          "snapshots": 7288684.0,
+          "memory_mib": 109.2
+        },
+        "world-b": {
+          "tick_sum": 196.455421,
+          "tick_count": 15259.0,
+          "players": 471.0,
+          "redirecting": 124.0,
+          "entities": 895.0,
+          "receive_drops": 14371.0,
+          "snapshots": 7342769.0,
+          "memory_mib": 156.3
+        },
+        "world-c": {
+          "tick_sum": 187.433217,
+          "tick_count": 15260.0,
+          "players": 506.0,
+          "redirecting": 128.0,
+          "entities": 934.0,
+          "receive_drops": 15685.0,
+          "snapshots": 7354780.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 186.662137,
+          "tick_count": 15260.0,
+          "players": 483.0,
+          "redirecting": 115.0,
+          "entities": 898.0,
+          "receive_drops": 14099.0,
+          "snapshots": 7328931.0,
+          "memory_mib": 135.2
+        }
+      }
+    },
+    {
+      "wall": 1786810207.3,
+      "shards": {
+        "world-a": {
+          "tick_sum": 194.64965,
+          "tick_count": 15792.0,
+          "players": 492.0,
+          "redirecting": 103.0,
+          "entities": 895.0,
+          "receive_drops": 14851.0,
+          "snapshots": 7548375.0,
+          "memory_mib": 109.0
+        },
+        "world-b": {
+          "tick_sum": 205.377706,
+          "tick_count": 15793.0,
+          "players": 498.0,
+          "redirecting": 117.0,
+          "entities": 915.0,
+          "receive_drops": 14880.0,
+          "snapshots": 7600267.0,
+          "memory_mib": 156.2
+        },
+        "world-c": {
+          "tick_sum": 196.063802,
+          "tick_count": 15793.0,
+          "players": 503.0,
+          "redirecting": 142.0,
+          "entities": 945.0,
+          "receive_drops": 16676.0,
+          "snapshots": 7623029.0,
+          "memory_mib": 164.2
+        },
+        "world-d": {
+          "tick_sum": 195.294621,
+          "tick_count": 15795.0,
+          "players": 470.0,
+          "redirecting": 150.0,
+          "entities": 920.0,
+          "receive_drops": 14360.0,
+          "snapshots": 7597566.0,
+          "memory_mib": 135.2
+        }
+      }
+    },
+    {
+      "wall": 1786810225.1,
+      "shards": {
+        "world-a": {
+          "tick_sum": 203.793962,
+          "tick_count": 16337.0,
+          "players": 528.0,
+          "redirecting": 105.0,
+          "entities": 933.0,
+          "receive_drops": 16294.0,
+          "snapshots": 7815802.0,
+          "memory_mib": 109.3
+        },
+        "world-b": {
+          "tick_sum": 215.680751,
+          "tick_count": 16337.0,
+          "players": 475.0,
+          "redirecting": 122.0,
+          "entities": 897.0,
+          "receive_drops": 16315.0,
+          "snapshots": 7871743.0,
+          "memory_mib": 155.7
+        },
+        "world-c": {
+          "tick_sum": 205.190732,
+          "tick_count": 16338.0,
+          "players": 488.0,
+          "redirecting": 130.0,
+          "entities": 918.0,
+          "receive_drops": 16902.0,
+          "snapshots": 7890380.0,
+          "memory_mib": 164.2
+        },
+        "world-d": {
+          "tick_sum": 203.902316,
+          "tick_count": 16338.0,
+          "players": 476.0,
+          "redirecting": 124.0,
+          "entities": 900.0,
+          "receive_drops": 14671.0,
+          "snapshots": 7863467.0,
+          "memory_mib": 135.3
+        }
+      }
+    },
+    {
+      "wall": 1786810243.2,
+      "shards": {
+        "world-a": {
+          "tick_sum": 212.451893,
+          "tick_count": 16880.0,
+          "players": 494.0,
+          "redirecting": 110.0,
+          "entities": 904.0,
+          "receive_drops": 16870.0,
+          "snapshots": 8085266.0,
+          "memory_mib": 109.2
+        },
+        "world-b": {
+          "tick_sum": 224.783171,
+          "tick_count": 16880.0,
+          "players": 476.0,
+          "redirecting": 125.0,
+          "entities": 901.0,
+          "receive_drops": 16713.0,
+          "snapshots": 8131122.0,
+          "memory_mib": 155.9
+        },
+        "world-c": {
+          "tick_sum": 214.303626,
+          "tick_count": 16881.0,
+          "players": 496.0,
+          "redirecting": 144.0,
+          "entities": 940.0,
+          "receive_drops": 18398.0,
+          "snapshots": 8163969.0,
+          "memory_mib": 164.5
+        },
+        "world-d": {
+          "tick_sum": 212.596416,
+          "tick_count": 16881.0,
+          "players": 497.0,
+          "redirecting": 107.0,
+          "entities": 904.0,
+          "receive_drops": 15093.0,
+          "snapshots": 8132092.0,
+          "memory_mib": 135.2
+        }
+      }
+    },
+    {
+      "wall": 1786810261.3,
+      "shards": {
+        "world-a": {
+          "tick_sum": 221.172715,
+          "tick_count": 17425.0,
+          "players": 486.0,
+          "redirecting": 121.0,
+          "entities": 907.0,
+          "receive_drops": 17944.0,
+          "snapshots": 8352778.0,
+          "memory_mib": 109.3
+        },
+        "world-b": {
+          "tick_sum": 234.216597,
+          "tick_count": 17425.0,
+          "players": 474.0,
+          "redirecting": 134.0,
+          "entities": 908.0,
+          "receive_drops": 17145.0,
+          "snapshots": 8398023.0,
+          "memory_mib": 155.7
+        },
+        "world-c": {
+          "tick_sum": 223.422438,
+          "tick_count": 17426.0,
+          "players": 504.0,
+          "redirecting": 135.0,
+          "entities": 939.0,
+          "receive_drops": 19456.0,
+          "snapshots": 8432827.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 221.720323,
+          "tick_count": 17426.0,
+          "players": 510.0,
+          "redirecting": 122.0,
+          "entities": 932.0,
+          "receive_drops": 15779.0,
+          "snapshots": 8401749.0,
+          "memory_mib": 135.3
+        }
+      }
+    },
+    {
+      "wall": 1786810279.5,
+      "shards": {
+        "world-a": {
+          "tick_sum": 226.790733,
+          "tick_count": 17935.0,
+          "players": 452.0,
+          "redirecting": 104.0,
+          "entities": 856.0,
+          "receive_drops": 18093.0,
+          "snapshots": 8596098.0,
+          "memory_mib": 108.7
+        },
+        "world-b": {
+          "tick_sum": 240.849666,
+          "tick_count": 17935.0,
+          "players": 499.0,
+          "redirecting": 115.0,
+          "entities": 914.0,
+          "receive_drops": 17489.0,
+          "snapshots": 8653699.0,
+          "memory_mib": 156.4
+        },
+        "world-c": {
+          "tick_sum": 229.743126,
+          "tick_count": 17936.0,
+          "players": 504.0,
+          "redirecting": 116.0,
+          "entities": 920.0,
+          "receive_drops": 19963.0,
+          "snapshots": 8687305.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 227.873069,
+          "tick_count": 17936.0,
+          "players": 512.0,
+          "redirecting": 132.0,
+          "entities": 944.0,
+          "receive_drops": 15990.0,
+          "snapshots": 8654537.0,
+          "memory_mib": 135.2
+        }
+      }
+    },
+    {
+      "wall": 1786810296.5,
+      "shards": {
+        "world-a": {
+          "tick_sum": 231.211218,
+          "tick_count": 18468.0,
+          "players": 2.0,
+          "redirecting": 39.0,
+          "entities": 341.0,
+          "receive_drops": 18117.0,
+          "snapshots": 8854238.0,
+          "memory_mib": 111.2
+        },
+        "world-b": {
+          "tick_sum": 245.265218,
+          "tick_count": 18468.0,
+          "players": 2.0,
+          "redirecting": 42.0,
+          "entities": 344.0,
+          "receive_drops": 17489.0,
+          "snapshots": 8890493.0,
+          "memory_mib": 155.7
+        },
+        "world-c": {
+          "tick_sum": 234.51742,
+          "tick_count": 18469.0,
+          "players": 5.0,
+          "redirecting": 31.0,
+          "entities": 336.0,
+          "receive_drops": 19963.0,
+          "snapshots": 8943228.0,
+          "memory_mib": 164.1
+        },
+        "world-d": {
+          "tick_sum": 232.261845,
+          "tick_count": 18469.0,
+          "players": 9.0,
+          "redirecting": 30.0,
+          "entities": 339.0,
+          "receive_drops": 15990.0,
+          "snapshots": 8896556.0,
+          "memory_mib": 135.2
+        }
+      }
+    }
+  ],
+  "fleet": {
+    "clients_requested": 2000,
+    "clients_connected": 1966,
+    "clients_peak_connected": 1987,
+    "clients_failed": 0,
+    "wall_seconds": 602.887,
+    "inputs_sent": 35251718,
+    "snapshots_received": 35573805,
+    "snapshots_applied": 35573805,
+    "migrations": 201651,
+    "bytes_sent": 1656644746,
+    "bytes_received": 19000193199,
+    "rtt_p50_ms": 33.861,
+    "rtt_p95_ms": 61.432,
+    "rtt_p99_ms": 66.392,
+    "rtt_max_ms": 85.865,
+    "loss_mean_percent": 0.043,
+    "loss_p99_percent": 1.046,
+    "client_recv_kbps_mean": 122.04,
+    "client_recv_kbps_p99": 136.75,
+    "client_send_kbps_mean": 12.09,
+    "prediction_error_mean": 1.634,
+    "prediction_error_p99": 9.5398,
+    "rejoins": 73,
+    "downstream_kbps_total": 252122.68,
+    "upstream_kbps_total": 21982.81,
+    "snapshots_per_second": 59005.7
+  },
+  "tick_drift_percent": 3.892780585279756
+}

@@ -140,11 +140,15 @@ def run_fleet(clients, threads, duration, ramp):
     raise SystemExit("load test produced no report:\n" + output)
 
 
-def sample_shard_cpu(delay, into):
-    """Records what fraction of a core each shard is using mid-run.
+def sample_shard_load(delay, cpu_into, live_into):
+    """Records CPU and the live entity counts partway through the run.
 
     A shard that is jittering and a shard that is saturated both show a long
-    tick, and only this tells them apart.
+    tick, and only the CPU figure tells them apart. The gauges have to be read
+    here rather than afterwards for a more basic reason: they are gauges, the
+    fleet has disconnected by the time the run returns, and a snapshot budget
+    computed against the entities left behind understates the traffic the
+    encoder actually avoided by more than half.
     """
     def run():
         time.sleep(delay)
@@ -154,18 +158,30 @@ def sample_shard_cpu(delay, into):
         for line in text.splitlines():
             parts = line.split()
             if len(parts) == 2 and parts[0].startswith("morton-world-"):
-                into[parts[0].replace("morton-", "").rsplit("-", 1)[0]] = float(
+                cpu_into[parts[0].replace("morton-", "").rsplit("-", 1)[0]] = float(
                     parts[1].rstrip("%"))
+        for index, name in enumerate(SHARDS):
+            try:
+                _, sums, _ = parse_metrics(fetch(f"http://127.0.0.1:{40081 + index}/metrics"))
+            except Exception:
+                continue
+            live_into[name] = {
+                "entities": sums.get("morton_entities", 0.0),
+                "players": sums.get("morton_players", 0.0),
+                "redirecting": sums.get("morton_players_redirecting", 0.0),
+            }
 
     thread = threading.Thread(target=run, daemon=True)
     thread.start()
     return thread
 
 
-def summarize(fleet, client, shards):
+def summarize(fleet, client, shards, live):
     """Folds one run's client report and shard scrapes into a result record."""
     ticks = [s["morton_tick_seconds"] for s in shards.values() if "morton_tick_seconds" in s]
-    entities = max(s["entities"] for s in shards.values())
+    entities = max((s["entities"] for s in live.values()), default=0.0)
+    if entities == 0.0:
+        entities = max(s["entities"] for s in shards.values())
     uncompressed_kbps = entities * 20.0 * 8.0 * 30.0 / 1000.0
     measured_kbps = client["client_recv_kbps_mean"]
     return {
@@ -175,6 +191,7 @@ def summarize(fleet, client, shards):
         "tick_mean_ms": sum(t["mean"] for t in ticks) / len(ticks) if ticks else 0.0,
         "worst_tick_p99_ms": max(t["p99"] for t in ticks) if ticks else 0.0,
         "entities_per_shard": entities,
+        "live": live,
         "receive_drops": sum(s["receive_drops"] for s in shards.values()),
         "uncompressed_kbps": uncompressed_kbps,
         "bandwidth_reduction_percent":
@@ -212,11 +229,12 @@ def main():
             load = round(os.getloadavg()[0], 2)
 
             cpu = {}
-            sampler = sample_shard_cpu(args.duration * 0.6, cpu)
+            live = {}
+            sampler = sample_shard_load(args.duration * 0.6, cpu, live)
             client = run_fleet(fleet, args.threads, args.duration, args.ramp)
-            sampler.join(timeout=5)
+            sampler.join(timeout=10)
             shards = {name: shard_report(40081 + index) for index, name in enumerate(SHARDS)}
-            record = summarize(fleet, client, shards)
+            record = summarize(fleet, client, shards, live)
             record["host_load"] = load
             record["shard_cpu_percent"] = cpu
             attempts[fleet].append(record)
