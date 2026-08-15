@@ -10,6 +10,7 @@
 #include "metrics/registry.h"
 #include "net/connection.h"
 #include "net/http.h"
+#include "net/websocket.h"
 #include "proto/messages.h"
 #include "proto/snapshot.h"
 #include "sim/world.h"
@@ -20,6 +21,13 @@ struct WorldServerConfig {
     std::string shard_id = "world-a";
     Address udp_bind;
     Address http_bind;
+
+    /// Optional visualiser bridge, enabled by a non-zero viewer_hz. The shard
+    /// then publishes its world state as JSON text frames and serves the
+    /// browser client on GET /.
+    Address ws_bind;
+    u32 viewer_hz = 0;
+
     Address redis;
     std::string key_prefix = "morton";
     WorldParams params;
@@ -103,6 +111,8 @@ public:
 
     Address udp_address() const { return connections_.local_address(); }
     Address http_address() const { return http_.local_address(); }
+    Address viewer_address() const { return viewer_.local_address(); }
+    u32 viewer_count() const { return viewer_.client_count(); }
     u32 player_count() const { return static_cast<u32>(players_.size()); }
 
     /// Players this shard still owns, excluding those already handed to another
@@ -123,6 +133,7 @@ private:
     void replicate(u64 now_us);
     void check_migrations();
     void refresh_cluster(u64 now_us);
+    void publish_viewer_state(u64 now_us);
     void expire_ghosts(u64 now_ms);
     void send_event(Connection& connection, const u8* data, u32 size);
 
@@ -133,6 +144,7 @@ private:
     ConnectionServer connections_;
     ShardCoordinator coordinator_;
     HttpServer http_;
+    WebSocketServer viewer_;
 
     std::unordered_map<ClientId, WorldPlayer> players_;
     std::unordered_map<std::string, ClientId> by_player_id_;
@@ -155,6 +167,7 @@ private:
     std::atomic<bool> running_{false};
     ClientId next_client_ = 1;
     u64 last_presence_refresh_ms_ = 0;
+    u64 last_viewer_publish_us_ = 0;
 
     Histogram* tick_histogram_ = nullptr;
     Histogram* snapshot_histogram_ = nullptr;

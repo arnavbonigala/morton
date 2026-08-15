@@ -44,6 +44,16 @@ int main(int argc, char** argv) {
     config.advertise =
         std::strcmp(option(argc, argv, "--MORTON_ADVERTISE", "1"), "0") != 0;
 
+    const char* ws = option(argc, argv, "--MORTON_WS", "");
+    if (ws[0] != '\0' && !Address::parse(ws, &config.ws_bind)) {
+        MORTON_LOG_ERROR("could not parse --MORTON_WS");
+        return 1;
+    }
+    if (ws[0] != '\0') {
+        config.viewer_hz = static_cast<u32>(
+            std::strtoul(option(argc, argv, "--MORTON_VIEWER_HZ", "10"), nullptr, 10));
+    }
+
     if (!Address::parse(option(argc, argv, "--MORTON_UDP", "0.0.0.0:40000"), &config.udp_bind) ||
         !Address::parse(option(argc, argv, "--MORTON_HTTP", "0.0.0.0:40080"), &config.http_bind) ||
         !Address::parse(option(argc, argv, "--MORTON_REDIS", "127.0.0.1:6379"), &config.redis)) {

@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <cstdio>
 
+#include "app/viewer_page.h"
 #include "core/log.h"
 #include "core/time.h"
 #include "net/udp_socket.h"
@@ -70,6 +71,20 @@ bool WorldServer::start(const WorldServerConfig& config) {
         return HttpResponse::json(state_json());
     });
 
+    if (config_.viewer_hz > 0) {
+        WebSocketConfig viewer;
+        viewer.bind = config_.ws_bind;
+        if (viewer_.start(viewer)) {
+            std::string endpoint = viewer_.local_address().to_string();
+            http_.route("GET", "/", [endpoint](const HttpRequest&) {
+                return HttpResponse::html(viewer_page(endpoint));
+            });
+        } else {
+            MORTON_LOG_WARN("shard %s could not bind its viewer endpoint",
+                            config_.shard_id.c_str());
+        }
+    }
+
     if (!http_.start(config_.http_bind)) {
         MORTON_LOG_WARN("shard %s could not bind its http endpoint", config_.shard_id.c_str());
     }
@@ -108,6 +123,7 @@ bool WorldServer::start(const WorldServerConfig& config) {
 
 void WorldServer::stop() {
     running_.store(false, std::memory_order_relaxed);
+    viewer_.stop();
     http_.stop();
     connections_.stop();
     if (config_.advertise) coordinator_.stop();
@@ -487,6 +503,7 @@ void WorldServer::tick(u64 now) {
     connections_.timeout_connections(now);
     connections_.flush(now);
     refresh_cluster(now);
+    publish_viewer_state(now);
 
     ++stats_.ticks;
     f64 elapsed = static_cast<f64>(now_us() - started) / 1000000.0;
@@ -508,6 +525,15 @@ void WorldServer::run() {
         u64 after = now_us();
         if (after > next + tick_us * 4) next = after;
     }
+}
+
+void WorldServer::publish_viewer_state(u64 now_us) {
+    if (!viewer_.running()) return;
+    u64 interval = 1000000ull / config_.viewer_hz;
+    if (now_us - last_viewer_publish_us_ < interval) return;
+    last_viewer_publish_us_ = now_us;
+    if (viewer_.client_count() == 0) return;
+    viewer_.publish(state_json());
 }
 
 u32 WorldServer::resident_player_count() const {
@@ -535,7 +561,14 @@ std::string WorldServer::state_json() const {
                number(entities.position[i].x, 2) + ",\"y\":" + number(entities.position[i].y, 2) +
                ",\"kind\":" + std::to_string(entities.kind[i]) + "}";
     }
+    out += "],\"owned_regions\":[";
+    std::vector<u32> owned = coordinator_.owned_regions();
+    for (std::size_t i = 0; i < owned.size(); ++i) {
+        if (i > 0) out += ",";
+        out += std::to_string(owned[i]);
+    }
     out += "],\"players\":" + std::to_string(players_.size()) +
+           ",\"viewers\":" + std::to_string(viewer_.client_count()) +
            ",\"tick_p99_ms\":" + number(tick_p99_ms()) + "}";
     return out;
 }

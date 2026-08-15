@@ -8,10 +8,13 @@
 #include "check.h"
 #include "cluster/matchmaker.h"
 #include "core/time.h"
+#include "net/http_client.h"
 #include "redis_fixture.h"
+#include "ws_client.h"
 
 using namespace morton;
 using morton_test::redis_fixture;
+using morton_test::WsClient;
 
 namespace {
 
@@ -292,6 +295,57 @@ TEST_CASE(forged_and_replayed_credentials_are_refused) {
 
     impostor.stop();
     legitimate.stop();
+    cluster.shutdown();
+}
+
+TEST_CASE(the_viewer_bridge_streams_live_world_state_to_a_browser_client) {
+    wipe("morton:w5");
+
+    Cluster cluster;
+    cluster.servers.push_back(std::make_unique<WorldServer>());
+    WorldServerConfig config = world_config("world-a", "morton:w5");
+    config.ws_bind = Address(0x7f000001u, 0);
+    config.viewer_hz = 30;
+    config.drifters = 20;
+    CHECK(cluster.servers[0]->start(config));
+    CHECK(cluster.matchmaker.start(matchmaker_config("morton:w5")));
+    cluster.sync();
+
+    HttpFetch page = http_fetch(cluster.servers[0]->http_address(), "GET", "/");
+    CHECK(page.ok);
+    CHECK(page.body.find("new WebSocket") != std::string::npos);
+    CHECK(page.body.find(cluster.servers[0]->viewer_address().to_string()) != std::string::npos);
+
+    WsClient viewer;
+    CHECK(viewer.connect(cluster.servers[0]->viewer_address()));
+
+    GameClient client;
+    CHECK(client.start(client_config("watched", cluster.matchmaker.http_address())));
+    cluster.pump({&client}, Vec2{1.f, 0.f}, 160);
+    CHECK(client.connected());
+    CHECK_EQ(cluster.servers[0]->viewer_count(), 1u);
+
+    std::string frame;
+    bool got_player = false;
+    for (u32 attempt = 0; attempt < 40 && !got_player; ++attempt) {
+        cluster.pump({&client}, Vec2{1.f, 0.f}, 5);
+        if (!viewer.receive(&frame, 500)) continue;
+        got_player = frame.find("\"players\":1") != std::string::npos;
+    }
+
+    CHECK(got_player);
+    CHECK(frame.find("\"shard\":\"world-a\"") != std::string::npos);
+    CHECK(frame.find("\"owned_regions\":[0") != std::string::npos);
+    CHECK(frame.find("\"kind\":0") != std::string::npos);
+    CHECK(frame.find("\"viewers\":1") != std::string::npos);
+
+    Vec2 authoritative = server_position(*cluster.servers[0], "watched");
+    CHECK(authoritative.x > 0.f);
+
+    std::printf("       viewer frame %zu bytes for %u entities\n", frame.size(),
+                cluster.servers[0]->world().entities().size());
+
+    client.stop();
     cluster.shutdown();
 }
 
