@@ -113,6 +113,18 @@ void LoadTest::run_worker(u32 worker, u32 first, u32 count) {
             }
 
             Vec2 axis{std::cos(bot.heading), std::sin(bot.heading)};
+
+            // Left to wander freely the fleet ends up pinned along the world
+            // edges, which is both unlike a real population and the worst case
+            // for interest management, so bots turn back at the margin.
+            const Vec2 position = bot.client.view().render_position();
+            const f32 margin = config_.params.size * 0.08f;
+            if (position.x < margin) axis.x = std::fabs(axis.x);
+            if (position.x > config_.params.size - margin) axis.x = -std::fabs(axis.x);
+            if (position.y < margin) axis.y = std::fabs(axis.y);
+            if (position.y > config_.params.size - margin) axis.y = -std::fabs(axis.y);
+            bot.heading = std::atan2(axis.y, axis.x);
+
             bot.client.send_input(axis, false, now);
         }
 
