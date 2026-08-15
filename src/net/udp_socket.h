@@ -1,5 +1,8 @@
 #pragma once
+#include <netinet/in.h>
+
 #include <string>
+#include <vector>
 
 #include "core/types.h"
 #include "net/address.h"
@@ -27,6 +30,15 @@ public:
     /// Returns false when the datagram was dropped by the kernel buffer being full.
     bool send(const Address& to, const u8* data, u32 size);
 
+    /// Copies the datagram into the pending batch, which leaves the socket
+    /// untouched until flush_sends(). Ordering is preserved, so a peer sees
+    /// batched datagrams in the order they were queued.
+    bool send_batched(const Address& to, const u8* data, u32 size);
+
+    /// Hands the pending batch to the kernel in as few syscalls as the
+    /// platform allows.
+    void flush_sends();
+
     /// Returns bytes received, 0 when no datagram is pending, -1 on a real error.
     int receive(Address* from, u8* buffer, u32 capacity);
 
@@ -43,7 +55,24 @@ public:
     u64 send_failures() const { return send_failures_; }
 
 private:
+    static constexpr u32 kBatchSize = 64;
+
+    struct Pending {
+        sockaddr_in address;
+        u32 size;
+    };
+
+    int refill();
+
     int fd_ = -1;
+    std::vector<u8> send_bytes_;
+    std::vector<Pending> send_pending_;
+    u32 send_count_ = 0;
+    std::vector<u8> recv_bytes_;
+    std::vector<sockaddr_in> recv_addresses_;
+    std::vector<u32> recv_sizes_;
+    u32 recv_count_ = 0;
+    u32 recv_next_ = 0;
     Address local_;
     u64 bytes_sent_ = 0;
     u64 bytes_received_ = 0;

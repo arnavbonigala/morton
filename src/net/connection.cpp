@@ -302,7 +302,7 @@ bool ConnectionServer::send_payload(Connection& connection, const u8* data, u32 
     if (body == 0) return false;
 
     connection.last_send_us = now_us;
-    return socket_.send(connection.address, buffer, offset + body);
+    return socket_.send_batched(connection.address, buffer, offset + body);
 }
 
 void ConnectionServer::flush(u64 now_us) {
@@ -313,6 +313,7 @@ void ConnectionServer::flush(u64 now_us) {
             send_payload(*connection, nullptr, 0, now_us);
         }
     }
+    socket_.flush_sends();
 }
 
 void ConnectionServer::timeout_connections(u64 now_us) {

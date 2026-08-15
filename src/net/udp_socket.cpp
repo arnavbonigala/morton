@@ -7,6 +7,7 @@
 #include <unistd.h>
 
 #include <cstring>
+#include <utility>
 
 #include "core/log.h"
 
@@ -26,7 +27,18 @@ UdpSocket& UdpSocket::operator=(UdpSocket&& other) noexcept {
         packets_sent_ = other.packets_sent_;
         packets_received_ = other.packets_received_;
         send_failures_ = other.send_failures_;
+        send_bytes_ = std::move(other.send_bytes_);
+        send_pending_ = std::move(other.send_pending_);
+        send_count_ = other.send_count_;
+        recv_bytes_ = std::move(other.recv_bytes_);
+        recv_addresses_ = std::move(other.recv_addresses_);
+        recv_sizes_ = std::move(other.recv_sizes_);
+        recv_count_ = other.recv_count_;
+        recv_next_ = other.recv_next_;
         other.fd_ = -1;
+        other.send_count_ = 0;
+        other.recv_count_ = 0;
+        other.recv_next_ = 0;
     }
     return *this;
 }
@@ -82,9 +94,13 @@ bool UdpSocket::open(const Address& bind_address, u32 buffer_bytes) {
 
 void UdpSocket::close() {
     if (fd_ >= 0) {
+        flush_sends();
         ::close(fd_);
         fd_ = -1;
     }
+    send_count_ = 0;
+    recv_count_ = 0;
+    recv_next_ = 0;
 }
 
 bool UdpSocket::send(const Address& to, const u8* data, u32 size) {
@@ -102,28 +118,143 @@ bool UdpSocket::send(const Address& to, const u8* data, u32 size) {
     return true;
 }
 
+bool UdpSocket::send_batched(const Address& to, const u8* data, u32 size) {
+    if (fd_ < 0 || size == 0 || size > kMaxDatagramSize) return false;
+
+    if (send_bytes_.empty()) {
+        send_bytes_.resize(static_cast<std::size_t>(kBatchSize) * kMaxDatagramSize);
+        send_pending_.resize(kBatchSize);
+    }
+    if (send_count_ == kBatchSize) flush_sends();
+
+    std::memcpy(send_bytes_.data() + static_cast<std::size_t>(send_count_) * kMaxDatagramSize, data,
+                size);
+    send_pending_[send_count_].address = to.to_sockaddr();
+    send_pending_[send_count_].size = size;
+    ++send_count_;
+    return true;
+}
+
+void UdpSocket::flush_sends() {
+    if (send_count_ == 0) return;
+    u32 count = send_count_;
+    send_count_ = 0;
+    if (fd_ < 0) return;
+
+#if defined(__linux__)
+    iovec vectors[kBatchSize];
+    mmsghdr messages[kBatchSize];
+    for (u32 i = 0; i < count; ++i) {
+        vectors[i].iov_base = send_bytes_.data() + static_cast<std::size_t>(i) * kMaxDatagramSize;
+        vectors[i].iov_len = send_pending_[i].size;
+        std::memset(&messages[i], 0, sizeof(messages[i]));
+        messages[i].msg_hdr.msg_name = &send_pending_[i].address;
+        messages[i].msg_hdr.msg_namelen = sizeof(sockaddr_in);
+        messages[i].msg_hdr.msg_iov = &vectors[i];
+        messages[i].msg_hdr.msg_iovlen = 1;
+    }
+
+    u32 sent = 0;
+    while (sent < count) {
+        int result = ::sendmmsg(fd_, messages + sent, count - sent, 0);
+        if (result <= 0) {
+            send_failures_ += count - sent;
+            return;
+        }
+        for (int i = 0; i < result; ++i) {
+            ++packets_sent_;
+            bytes_sent_ += messages[sent + i].msg_len;
+        }
+        sent += static_cast<u32>(result);
+    }
+#else
+    for (u32 i = 0; i < count; ++i) {
+        sockaddr_in address = send_pending_[i].address;
+        const u8* data = send_bytes_.data() + static_cast<std::size_t>(i) * kMaxDatagramSize;
+        ssize_t result = ::sendto(fd_, data, send_pending_[i].size, 0,
+                                  reinterpret_cast<sockaddr*>(&address), sizeof(address));
+        if (result < 0) {
+            ++send_failures_;
+            continue;
+        }
+        ++packets_sent_;
+        bytes_sent_ += static_cast<u64>(result);
+    }
+#endif
+}
+
 int UdpSocket::receive(Address* from, u8* buffer, u32 capacity) {
     if (fd_ < 0) return -1;
 
-    sockaddr_in sa;
-    socklen_t sa_len = sizeof(sa);
-    ssize_t received =
-        ::recvfrom(fd_, buffer, capacity, 0, reinterpret_cast<sockaddr*>(&sa), &sa_len);
-
-    if (received < 0) {
-        if (errno == EAGAIN || errno == EWOULDBLOCK) return 0;
-        if (errno == EINTR || errno == ECONNREFUSED) return 0;
-        return -1;
+    if (recv_next_ == recv_count_) {
+        int result = refill();
+        if (result <= 0) return result;
     }
 
-    *from = Address::from_sockaddr(sa);
-    ++packets_received_;
-    bytes_received_ += static_cast<u64>(received);
-    return static_cast<int>(received);
+    u32 size = recv_sizes_[recv_next_];
+    if (size > capacity) size = capacity;
+    std::memcpy(buffer, recv_bytes_.data() + static_cast<std::size_t>(recv_next_) * kMaxDatagramSize,
+                size);
+    *from = Address::from_sockaddr(recv_addresses_[recv_next_]);
+    ++recv_next_;
+    return static_cast<int>(size);
+}
+
+int UdpSocket::refill() {
+    recv_next_ = 0;
+    recv_count_ = 0;
+    if (recv_bytes_.empty()) {
+        recv_bytes_.resize(static_cast<std::size_t>(kBatchSize) * kMaxDatagramSize);
+        recv_addresses_.resize(kBatchSize);
+        recv_sizes_.resize(kBatchSize);
+    }
+
+    auto soft_error = [] {
+        return errno == EAGAIN || errno == EWOULDBLOCK || errno == EINTR || errno == ECONNREFUSED;
+    };
+
+#if defined(__linux__)
+    iovec vectors[kBatchSize];
+    mmsghdr messages[kBatchSize];
+    for (u32 i = 0; i < kBatchSize; ++i) {
+        vectors[i].iov_base = recv_bytes_.data() + static_cast<std::size_t>(i) * kMaxDatagramSize;
+        vectors[i].iov_len = kMaxDatagramSize;
+        std::memset(&messages[i], 0, sizeof(messages[i]));
+        messages[i].msg_hdr.msg_name = &recv_addresses_[i];
+        messages[i].msg_hdr.msg_namelen = sizeof(sockaddr_in);
+        messages[i].msg_hdr.msg_iov = &vectors[i];
+        messages[i].msg_hdr.msg_iovlen = 1;
+    }
+
+    int result = ::recvmmsg(fd_, messages, kBatchSize, MSG_DONTWAIT, nullptr);
+    if (result < 0) return soft_error() ? 0 : -1;
+    for (int i = 0; i < result; ++i) recv_sizes_[i] = messages[i].msg_len;
+    recv_count_ = static_cast<u32>(result);
+#else
+    for (u32 i = 0; i < kBatchSize; ++i) {
+        socklen_t address_len = sizeof(sockaddr_in);
+        ssize_t result = ::recvfrom(
+            fd_, recv_bytes_.data() + static_cast<std::size_t>(i) * kMaxDatagramSize,
+            kMaxDatagramSize, 0, reinterpret_cast<sockaddr*>(&recv_addresses_[i]), &address_len);
+        if (result < 0) {
+            if (recv_count_ == 0 && !soft_error()) return -1;
+            break;
+        }
+        recv_sizes_[i] = static_cast<u32>(result);
+        ++recv_count_;
+    }
+#endif
+
+    for (u32 i = 0; i < recv_count_; ++i) {
+        ++packets_received_;
+        bytes_received_ += recv_sizes_[i];
+    }
+    return recv_count_ > 0 ? 1 : 0;
 }
 
 bool UdpSocket::wait_readable(u64 timeout_us) const {
     if (fd_ < 0) return false;
+    if (recv_next_ < recv_count_) return true;
 
     pollfd pfd;
     pfd.fd = fd_;
