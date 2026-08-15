@@ -3,6 +3,8 @@
 #include <unistd.h>
 
 #include <algorithm>
+#include <set>
+#include <string>
 #include <thread>
 #include <vector>
 
@@ -53,6 +55,36 @@ TEST_CASE(histogram_resolves_a_tail_hidden_inside_a_dense_body) {
     CHECK_NEAR(histogram.p50(), 0.005, 0.002);
     CHECK(histogram.p99() > 0.100);
     CHECK_NEAR(histogram.p999(), 0.400, 0.060);
+}
+
+TEST_CASE(sub_millisecond_phases_are_measured_rather_than_rounded_away) {
+    Histogram histogram;
+    for (int i = 0; i < 4000; ++i) histogram.record(0.000120 + static_cast<f64>(i % 40) * 0.000001);
+
+    CHECK_NEAR(histogram.mean(), 0.0001395, 0.000002);
+    CHECK_NEAR(histogram.p50(), 0.000140, 0.000021);
+    CHECK_NEAR(histogram.max(), 0.000159, 0.000001);
+    CHECK(histogram.min() > 0.0);
+}
+
+TEST_CASE(exposed_bucket_bounds_stay_distinct_at_microsecond_scale) {
+    MetricsRegistry& registry = MetricsRegistry::instance();
+    Histogram* net = registry.histogram("morton_bound_probe_seconds", "probe");
+    for (u32 i = 0; i < 12; ++i) net->record(Histogram::bucket_upper_bound(i) * 0.99);
+
+    std::string text = registry.expose();
+    std::set<std::string> bounds;
+    std::size_t cursor = 0;
+    while (true) {
+        std::size_t line = text.find("morton_bound_probe_seconds_bucket", cursor);
+        if (line == std::string::npos) break;
+        std::size_t open = text.find("le=\"", line);
+        std::size_t close = text.find('"', open + 4);
+        std::string bound = text.substr(open + 4, close - open - 4);
+        if (bound != "+Inf") bounds.insert(bound);
+        cursor = text.find('\n', line);
+    }
+    CHECK_EQ(bounds.size(), 12u);
 }
 
 TEST_CASE(concurrent_recording_loses_no_samples) {

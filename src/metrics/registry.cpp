@@ -127,7 +127,7 @@ std::string MetricsRegistry::expose() const {
             cumulative += bucket;
             if (bucket == 0) continue;
             char bound[64];
-            std::snprintf(bound, sizeof(bound), "le=\"%.6f\"", Histogram::bucket_upper_bound(i));
+            std::snprintf(bound, sizeof(bound), "le=\"%.9g\"", Histogram::bucket_upper_bound(i));
             out << name << "_bucket" << labels_with(bound) << " " << cumulative << "\n";
         }
         out << name << "_bucket" << labels_with("le=\"+Inf\"") << " " << histogram->count() << "\n";
