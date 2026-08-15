@@ -51,6 +51,8 @@ bool WorldServer::start(const WorldServerConfig& config) {
         metrics.counter("morton_migrations_out_total", "players handed to another shard");
     migrations_in_counter_ =
         metrics.counter("morton_migrations_in_total", "players adopted from another shard");
+    send_failures_counter_ =
+        metrics.counter("morton_send_failures_total", "datagrams the kernel refused");
     players_gauge_ = metrics.gauge("morton_players", "connected players");
     entities_gauge_ = metrics.gauge("morton_entities", "simulated entities");
 
@@ -555,6 +557,9 @@ void WorldServer::tick(u64 now) {
     ++stats_.ticks;
     f64 elapsed = static_cast<f64>(now_us() - started) / 1000000.0;
     if (tick_histogram_) tick_histogram_->record(elapsed);
+    u64 send_failures = connections_.socket().send_failures();
+    if (send_failures_counter_) send_failures_counter_->add(send_failures - last_send_failures_);
+    last_send_failures_ = send_failures;
     if (players_gauge_) players_gauge_->set(static_cast<f64>(players_.size()));
     if (entities_gauge_) entities_gauge_->set(static_cast<f64>(world_.entities().size()));
 }

@@ -66,6 +66,16 @@ bool UdpSocket::open(const Address& bind_address, u32 buffer_bytes) {
         size /= 2;
     }
 
+    // Linux clamps the request to net.core.wmem_max without failing, so a shard
+    // can be sending into a buffer a fraction of the size it asked for and see
+    // the shortfall only as client side packet loss.
+    int granted = 0;
+    socklen_t granted_len = sizeof(granted);
+    if (::getsockopt(fd_, SOL_SOCKET, SO_SNDBUF, &granted, &granted_len) == 0 &&
+        static_cast<u32>(granted) < buffer_bytes) {
+        MORTON_LOG_WARN("send buffer is %d bytes, asked for %u", granted, buffer_bytes);
+    }
+
     sockaddr_in sa = bind_address.to_sockaddr();
     if (::bind(fd_, reinterpret_cast<sockaddr*>(&sa), sizeof(sa)) < 0) {
         MORTON_LOG_ERROR("bind(%s) failed: %s", bind_address.to_string().c_str(),
