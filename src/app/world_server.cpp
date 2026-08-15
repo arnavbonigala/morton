@@ -305,7 +305,7 @@ void WorldServer::on_connect(Connection& connection) {
     u32 size = encode_world_config(event, buffer, sizeof(buffer));
     if (size > 0) send_event(connection, buffer, size);
 
-    MORTON_LOG_INFO("shard %s: %s joined as entity %u in region %u", config_.shard_id.c_str(),
+    MORTON_LOG_DEBUG("shard %s: %s joined as entity %u in region %u", config_.shard_id.c_str(),
                     admitted.credential.player_id.c_str(), event.entity, event.region);
 }
 
@@ -336,7 +336,7 @@ void WorldServer::on_disconnect(Connection& connection, const char* reason) {
     if (mapping != by_player_id_.end() && mapping->second == connection.client_id) {
         by_player_id_.erase(mapping);
     }
-    MORTON_LOG_INFO("shard %s: %s left (%s)", config_.shard_id.c_str(), player.player_id.c_str(),
+    MORTON_LOG_DEBUG("shard %s: %s left (%s)", config_.shard_id.c_str(), player.player_id.c_str(),
                     reason);
     players_.erase(it);
 }
@@ -465,7 +465,7 @@ void WorldServer::check_migrations() {
         ++stats_.migrations_out;
         if (migrations_out_counter_) migrations_out_counter_->add();
 
-        MORTON_LOG_INFO("shard %s: handing %s to %s (region %u)", config_.shard_id.c_str(),
+        MORTON_LOG_DEBUG("shard %s: handing %s to %s (region %u)", config_.shard_id.c_str(),
                         player.player_id.c_str(), plan.target_shard.c_str(), plan.target_region);
     }
 

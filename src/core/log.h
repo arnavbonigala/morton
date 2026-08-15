@@ -35,6 +35,17 @@ public:
     }
 
 private:
+    Log() {
+        const char* name = std::getenv("MORTON_LOG_LEVEL");
+        if (name == nullptr) return;
+        std::string_view level(name);
+        if (level == "trace") { level_ = LogLevel::kTrace; }
+        if (level == "debug") { level_ = LogLevel::kDebug; }
+        if (level == "info") { level_ = LogLevel::kInfo; }
+        if (level == "warn") { level_ = LogLevel::kWarn; }
+        if (level == "error") { level_ = LogLevel::kError; }
+    }
+
     static const char* level_name(LogLevel level) {
         switch (level) {
             case LogLevel::kTrace: return "trace";
@@ -52,15 +63,6 @@ private:
 };
 
 inline void set_log_tag(std::string tag) { Log::instance().set_tag(std::move(tag)); }
-
-inline bool set_log_level_by_name(std::string_view name) {
-    if (name == "trace") { Log::instance().set_level(LogLevel::kTrace); return true; }
-    if (name == "debug") { Log::instance().set_level(LogLevel::kDebug); return true; }
-    if (name == "info") { Log::instance().set_level(LogLevel::kInfo); return true; }
-    if (name == "warn") { Log::instance().set_level(LogLevel::kWarn); return true; }
-    if (name == "error") { Log::instance().set_level(LogLevel::kError); return true; }
-    return false;
-}
 
 #define MORTON_LOG_TRACE(...) ::morton::Log::instance().write(::morton::LogLevel::kTrace, __VA_ARGS__)
 #define MORTON_LOG_DEBUG(...) ::morton::Log::instance().write(::morton::LogLevel::kDebug, __VA_ARGS__)
