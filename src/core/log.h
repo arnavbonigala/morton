@@ -27,7 +27,11 @@ public:
     void write(LogLevel level, const char* fmt, Args... args) {
         if (static_cast<int>(level) < static_cast<int>(level_)) return;
         char body[2048];
-        std::snprintf(body, sizeof(body), fmt, args...);
+        if constexpr (sizeof...(Args) == 0) {
+            std::snprintf(body, sizeof(body), "%s", fmt);
+        } else {
+            std::snprintf(body, sizeof(body), fmt, args...);
+        }
         std::lock_guard<std::mutex> guard(mutex_);
         std::fprintf(stderr, "[%8.3f][%s][%s] %s\n", now_ms() / 1000.0, level_name(level),
                      tag_.c_str(), body);
