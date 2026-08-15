@@ -65,6 +65,12 @@ public:
     bool accept_handoff(u64 token, MigrationTicket* ticket);
 
     bool touch_presence(const PresenceRecord& record);
+
+    /// Heartbeats the whole resident roster in one round trip rather than one
+    /// per player, which is otherwise the longest thing a tick does.
+    void queue_touch_presence(const PresenceRecord& record);
+    bool flush_presence();
+
     bool claim_player(const PresenceRecord& record, std::string* current_owner);
     bool release_player(const std::string& player_id);
 

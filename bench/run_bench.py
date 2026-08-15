@@ -26,6 +26,7 @@ HISTOGRAMS = [
     "morton_send_seconds",
     "morton_net_seconds",
     "morton_migrate_seconds",
+    "morton_cluster_seconds",
     "morton_snapshot_bytes",
 ]
 

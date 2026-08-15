@@ -53,6 +53,11 @@ public:
     bool get_shard(const std::string& shard_id, ShardInfo* out);
 
     bool set_presence(const PresenceRecord& record, u32 ttl_ms);
+
+    /// Queues a heartbeat without waiting for it. A shard refreshing every
+    /// resident player one round trip at a time spends the whole tick doing it,
+    /// so the caller queues the fleet and pays for a single round trip.
+    void queue_set_presence(const PresenceRecord& record, u32 ttl_ms);
     bool get_presence(const std::string& player_id, PresenceRecord* out);
     bool clear_presence(const std::string& player_id);
 

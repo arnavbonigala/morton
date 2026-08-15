@@ -168,6 +168,19 @@ bool ShardCoordinator::touch_presence(const PresenceRecord& record) {
     return registry_.set_presence(record, config_.presence_ttl_ms);
 }
 
+void ShardCoordinator::queue_touch_presence(const PresenceRecord& record) {
+    registry_.queue_set_presence(record, config_.presence_ttl_ms);
+}
+
+bool ShardCoordinator::flush_presence() {
+    std::vector<RedisReply> replies;
+    if (!registry_.client().flush(&replies)) return false;
+    for (const RedisReply& reply : replies) {
+        if (reply.is_error()) return false;
+    }
+    return true;
+}
+
 bool ShardCoordinator::claim_player(const PresenceRecord& record, std::string* current_owner) {
     return registry_.claim_presence(record, config_.presence_ttl_ms, current_owner);
 }

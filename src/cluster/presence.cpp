@@ -141,7 +141,7 @@ bool ClusterRegistry::get_shard(const std::string& shard_id, ShardInfo* out) {
     return true;
 }
 
-bool ClusterRegistry::set_presence(const PresenceRecord& record, u32 ttl_ms) {
+void ClusterRegistry::queue_set_presence(const PresenceRecord& record, u32 ttl_ms) {
     const std::string key = presence_key(record.player_id);
     const std::string ttl = std::to_string(ttl_ms);
 
@@ -151,6 +151,10 @@ bool ClusterRegistry::set_presence(const PresenceRecord& record, u32 ttl_ms) {
     redis_.queue({"PEXPIRE", key, ttl});
     redis_.queue({"SADD", roster_key(record.shard_id), record.player_id});
     redis_.queue({"PEXPIRE", roster_key(record.shard_id), ttl});
+}
+
+bool ClusterRegistry::set_presence(const PresenceRecord& record, u32 ttl_ms) {
+    queue_set_presence(record, ttl_ms);
 
     std::vector<RedisReply> replies;
     if (!redis_.flush(&replies)) return false;

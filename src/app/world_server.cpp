@@ -41,6 +41,8 @@ bool WorldServer::start(const WorldServerConfig& config) {
     net_histogram_ = metrics.histogram("morton_net_seconds", "socket receive and flush duration");
     migrate_histogram_ =
         metrics.histogram("morton_migrate_seconds", "handoff scan and redirect duration");
+    cluster_histogram_ =
+        metrics.histogram("morton_cluster_seconds", "presence heartbeat and viewer publish");
     snapshot_histogram_ =
         metrics.histogram("morton_snapshot_bytes", "per-client snapshot size in bytes");
     snapshots_counter_ = metrics.counter("morton_snapshots_total", "snapshots sent");
@@ -503,8 +505,9 @@ void WorldServer::refresh_cluster(u64 now_us) {
             record.shard_id = config_.shard_id;
             record.region = player.region;
             record.session_token = player.session_token;
-            coordinator_.touch_presence(record);
+            coordinator_.queue_touch_presence(record);
         }
+        coordinator_.flush_presence();
         expire_ghosts(now_ms);
 
         for (auto it = redeemed_tickets_.begin(); it != redeemed_tickets_.end();) {
@@ -553,8 +556,12 @@ void WorldServer::tick(u64 now) {
             static_cast<f64>(received_at - mark + now_us() - migrated_at) / 1000000.0);
     }
 
+    u64 flushed_at = now_us();
     refresh_cluster(now);
     publish_viewer_state(now);
+    if (cluster_histogram_) {
+        cluster_histogram_->record(static_cast<f64>(now_us() - flushed_at) / 1000000.0);
+    }
 
     ++stats_.ticks;
     f64 elapsed = static_cast<f64>(now_us() - started) / 1000000.0;
