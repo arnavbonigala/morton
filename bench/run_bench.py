@@ -23,6 +23,7 @@ HISTOGRAMS = [
     "morton_encode_seconds",
     "morton_send_seconds",
     "morton_net_seconds",
+    "morton_migrate_seconds",
     "morton_snapshot_bytes",
 ]
 

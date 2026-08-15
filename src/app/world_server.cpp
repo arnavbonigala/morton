@@ -39,6 +39,8 @@ bool WorldServer::start(const WorldServerConfig& config) {
     send_histogram_ =
         metrics.histogram("morton_send_seconds", "snapshot enqueue duration, all clients");
     net_histogram_ = metrics.histogram("morton_net_seconds", "socket receive and flush duration");
+    migrate_histogram_ =
+        metrics.histogram("morton_migrate_seconds", "handoff scan and redirect duration");
     snapshot_histogram_ =
         metrics.histogram("morton_snapshot_bytes", "per-client snapshot size in bytes");
     snapshots_counter_ = metrics.counter("morton_snapshots_total", "snapshots sent");
@@ -535,11 +537,16 @@ void WorldServer::tick(u64 now) {
     }
 
     check_migrations();
+    u64 migrated_at = now_us();
+    if (migrate_histogram_) {
+        migrate_histogram_->record(static_cast<f64>(migrated_at - replicated_at) / 1000000.0);
+    }
+
     connections_.timeout_connections(now);
     connections_.flush(now);
     if (net_histogram_) {
         net_histogram_->record(
-            static_cast<f64>(received_at - mark + now_us() - replicated_at) / 1000000.0);
+            static_cast<f64>(received_at - mark + now_us() - migrated_at) / 1000000.0);
     }
 
     refresh_cluster(now);

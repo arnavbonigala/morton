@@ -180,6 +180,7 @@ private:
     Histogram* encode_histogram_ = nullptr;
     Histogram* send_histogram_ = nullptr;
     Histogram* net_histogram_ = nullptr;
+    Histogram* migrate_histogram_ = nullptr;
     Histogram* snapshot_histogram_ = nullptr;
     Counter* snapshots_counter_ = nullptr;
     Counter* snapshot_bytes_counter_ = nullptr;
