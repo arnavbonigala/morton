@@ -13,6 +13,7 @@ import math
 import os
 import subprocess
 import sys
+import threading
 import time
 import urllib.request
 
@@ -136,6 +137,28 @@ def run_fleet(clients, threads, duration, ramp):
     raise SystemExit("load test produced no report:\n" + output)
 
 
+def sample_shard_cpu(delay, into):
+    """Records what fraction of a core each shard is using mid-run.
+
+    A shard that is jittering and a shard that is saturated both show a long
+    tick, and only this tells them apart.
+    """
+    def run():
+        time.sleep(delay)
+        text = subprocess.run(
+            ["docker", "stats", "--no-stream", "--format", "{{.Name}} {{.CPUPerc}}"],
+            capture_output=True, text=True).stdout
+        for line in text.splitlines():
+            parts = line.split()
+            if len(parts) == 2 and parts[0].startswith("morton-world-"):
+                into[parts[0].replace("morton-", "").rsplit("-", 1)[0]] = float(
+                    parts[1].rstrip("%"))
+
+    thread = threading.Thread(target=run, daemon=True)
+    thread.start()
+    return thread
+
+
 def summarize(fleet, client, shards):
     """Folds one run's client report and shard scrapes into a result record."""
     ticks = [s["morton_tick_seconds"] for s in shards.values() if "morton_tick_seconds" in s]
@@ -184,17 +207,22 @@ def main():
             time.sleep(3)
             load = round(os.getloadavg()[0], 2)
 
+            cpu = {}
+            sampler = sample_shard_cpu(args.duration * 0.6, cpu)
             client = run_fleet(fleet, args.threads, args.duration, args.ramp)
+            sampler.join(timeout=5)
             shards = {name: shard_report(40081 + index) for index, name in enumerate(SHARDS)}
             record = summarize(fleet, client, shards)
             record["host_load"] = load
+            record["shard_cpu_percent"] = cpu
             attempts[fleet].append(record)
             print(f"  round {attempt + 1}/{args.repeat}  fleet {fleet}  "
                   f"peak {record['client']['clients_peak_connected']}  "
                   f"tick mean {record['tick_mean_ms']:.2f} ms  "
                   f"p99 {record['worst_tick_p99_ms']:.2f} ms  "
                   f"loss {record['client']['loss_mean_percent']:.2f}%  "
-                  f"host load {load}", flush=True)
+                  f"host load {load}  "
+                  f"shard cpu {max(cpu.values()) if cpu else 0:.0f}%", flush=True)
 
     results = []
     for fleet in fleets:
