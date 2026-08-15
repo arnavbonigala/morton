@@ -1,0 +1,109 @@
+x-world: &world
+  image: morton:latest
+  depends_on:
+    redis:
+      condition: service_healthy
+  environment: &world-env
+    MORTON_REDIS: redis:6379
+    MORTON_PREFIX: morton
+    MORTON_UDP: 0.0.0.0:40000
+    MORTON_HTTP: 0.0.0.0:40080
+    MORTON_WS: 0.0.0.0:40090
+    MORTON_CAPACITY: "2000"
+    MORTON_DRIFTERS: "300"
+    MORTON_TICK_RATE: "30"
+    MORTON_REGIONS_PER_AXIS: "2"
+  healthcheck:
+    test: ["CMD", "curl", "-fs", "http://127.0.0.1:40080/health"]
+    interval: 2s
+    timeout: 2s
+    retries: 15
+
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  matchmaker:
+    image: morton:latest
+    entrypoint: ["/usr/local/bin/morton_matchmaker"]
+    depends_on:
+      redis:
+        condition: service_healthy
+    environment:
+      MORTON_REDIS: redis:6379
+      MORTON_PREFIX: morton
+      MORTON_HTTP: 0.0.0.0:8080
+      MORTON_REGIONS_PER_AXIS: "2"
+    ports:
+      - "8080:8080"
+    healthcheck:
+      test: ["CMD", "curl", "-fs", "http://127.0.0.1:8080/health"]
+      interval: 2s
+      timeout: 2s
+      retries: 15
+
+  world-a:
+    <<: *world
+    build: .
+    environment:
+      <<: *world-env
+      MORTON_SHARD_ID: world-a
+      MORTON_ADVERTISE_UDP: world-a:40000
+      MORTON_ADVERTISE_HTTP: world-a:40080
+    ports:
+      - "40081:40080"
+      - "40091:40090"
+
+  world-b:
+    <<: *world
+    environment:
+      <<: *world-env
+      MORTON_SHARD_ID: world-b
+      MORTON_ADVERTISE_UDP: world-b:40000
+      MORTON_ADVERTISE_HTTP: world-b:40080
+    ports:
+      - "40082:40080"
+      - "40092:40090"
+
+  world-c:
+    <<: *world
+    environment:
+      <<: *world-env
+      MORTON_SHARD_ID: world-c
+      MORTON_ADVERTISE_UDP: world-c:40000
+      MORTON_ADVERTISE_HTTP: world-c:40080
+    ports:
+      - "40083:40080"
+      - "40093:40090"
+
+  world-d:
+    <<: *world
+    environment:
+      <<: *world-env
+      MORTON_SHARD_ID: world-d
+      MORTON_ADVERTISE_UDP: world-d:40000
+      MORTON_ADVERTISE_HTTP: world-d:40080
+    ports:
+      - "40084:40080"
+      - "40094:40090"
+
+  loadtest:
+    image: morton:latest
+    entrypoint: ["/usr/local/bin/morton_loadtest"]
+    profiles: ["bench"]
+    depends_on:
+      matchmaker:
+        condition: service_healthy
+    environment:
+      MORTON_MATCHMAKER: matchmaker:8080
+      MORTON_CLIENTS: "2000"
+      MORTON_THREADS: "4"
+      MORTON_RAMP: "500"
+      MORTON_DURATION: "60"
+      MORTON_REPORT_MS: "10000"

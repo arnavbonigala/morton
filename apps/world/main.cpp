@@ -41,6 +41,8 @@ int main(int argc, char** argv) {
     config.regions.regions_per_axis = static_cast<u32>(
         std::strtoul(option(argc, argv, "--MORTON_REGIONS_PER_AXIS", "2"), nullptr, 10));
     config.regions.world_size = config.params.size;
+    config.advertise_udp = option(argc, argv, "--MORTON_ADVERTISE_UDP", "");
+    config.advertise_http = option(argc, argv, "--MORTON_ADVERTISE_HTTP", "");
     config.advertise =
         std::strcmp(option(argc, argv, "--MORTON_ADVERTISE", "1"), "0") != 0;
 
