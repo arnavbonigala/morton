@@ -135,6 +135,25 @@ def run_fleet(clients, threads, duration, ramp):
     raise SystemExit("load test produced no report:\n" + output)
 
 
+def summarize(fleet, client, shards):
+    """Folds one run's client report and shard scrapes into a result record."""
+    ticks = [s["morton_tick_seconds"] for s in shards.values() if "morton_tick_seconds" in s]
+    entities = max(s["entities"] for s in shards.values())
+    uncompressed_kbps = entities * 20.0 * 8.0 * 30.0 / 1000.0
+    measured_kbps = client["client_recv_kbps_mean"]
+    return {
+        "fleet": fleet,
+        "client": client,
+        "shards": shards,
+        "tick_mean_ms": sum(t["mean"] for t in ticks) / len(ticks) if ticks else 0.0,
+        "worst_tick_p99_ms": max(t["p99"] for t in ticks) if ticks else 0.0,
+        "entities_per_shard": entities,
+        "uncompressed_kbps": uncompressed_kbps,
+        "bandwidth_reduction_percent":
+            100.0 * (1.0 - measured_kbps / uncompressed_kbps) if uncompressed_kbps else 0.0,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--fleets", default="250,500,1000,2000")
@@ -143,6 +162,7 @@ def main():
     parser.add_argument("--ramp", type=int, default=500)
     parser.add_argument("--out", default="bench/results.json")
     parser.add_argument("--keep-up", action="store_true")
+    parser.add_argument("--repeat", type=int, default=3)
     args = parser.parse_args()
 
     compose("build", "world-a")
@@ -152,36 +172,38 @@ def main():
     results = []
     for fleet in [int(value) for value in args.fleets.split(",") if value]:
         print(f"\n=== fleet of {fleet} clients ===", flush=True)
-        compose("restart", *SHARDS)
-        wait_for_cluster()
-        time.sleep(3)
 
-        client = run_fleet(fleet, args.threads, args.duration, args.ramp)
-        shards = {name: shard_report(40081 + index) for index, name in enumerate(SHARDS)}
+        # A single run is at the mercy of whatever else the host is doing, and a
+        # contended run reads as a capacity result rather than as noise, so each
+        # fleet is measured repeatedly and reported by its median tick cost.
+        attempts = []
+        for attempt in range(args.repeat):
+            compose("restart", *SHARDS)
+            wait_for_cluster()
+            time.sleep(3)
 
-        worst_tick_p99 = max(s["morton_tick_seconds"]["p99"] for s in shards.values()
-                             if "morton_tick_seconds" in s)
-        entities = max(s["entities"] for s in shards.values())
-        uncompressed_kbps = entities * 20.0 * 8.0 * 30.0 / 1000.0
-        measured_kbps = client["client_recv_kbps_mean"]
-        reduction = 100.0 * (1.0 - measured_kbps / uncompressed_kbps) if uncompressed_kbps else 0.0
+            client = run_fleet(fleet, args.threads, args.duration, args.ramp)
+            shards = {name: shard_report(40081 + index) for index, name in enumerate(SHARDS)}
+            attempts.append(summarize(fleet, client, shards))
+            last = attempts[-1]
+            print(f"  run {attempt + 1}/{args.repeat}  "
+                  f"peak {last['client']['clients_peak_connected']}  "
+                  f"tick mean {last['tick_mean_ms']:.2f} ms  "
+                  f"p99 {last['worst_tick_p99_ms']:.2f} ms  "
+                  f"loss {last['client']['loss_mean_percent']:.2f}%", flush=True)
 
-        results.append({
-            "fleet": fleet,
-            "client": client,
-            "shards": shards,
-            "worst_tick_p99_ms": worst_tick_p99,
-            "entities_per_shard": entities,
-            "uncompressed_kbps": uncompressed_kbps,
-            "bandwidth_reduction_percent": reduction,
-        })
+        attempts.sort(key=lambda run: run["tick_mean_ms"])
+        chosen = attempts[len(attempts) // 2]
+        chosen["tick_mean_ms_runs"] = [round(run["tick_mean_ms"], 3) for run in attempts]
+        results.append(chosen)
 
+        client = chosen["client"]
         print(f"connected peak {client['clients_peak_connected']}/{fleet}  "
               f"rtt p99 {client['rtt_p99_ms']:.1f} ms  "
               f"loss {client['loss_mean_percent']:.2f}%  "
-              f"per-client {measured_kbps:.1f} kbit/s  "
-              f"reduction {reduction:.2f}%  "
-              f"worst shard tick p99 {worst_tick_p99:.2f} ms  "
+              f"per-client {client['client_recv_kbps_mean']:.1f} kbit/s  "
+              f"reduction {chosen['bandwidth_reduction_percent']:.2f}%  "
+              f"worst shard tick p99 {chosen['worst_tick_p99_ms']:.2f} ms  "
               f"migrations {client['migrations']}", flush=True)
 
     with open(args.out, "w") as handle:
