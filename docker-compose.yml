@@ -1,5 +1,6 @@
 x-world: &world
   image: morton:latest
+  cpus: 1.0
   depends_on:
     redis:
       condition: service_healthy
@@ -95,6 +96,7 @@ services:
 
   loadtest:
     image: morton:latest
+    cpus: 3.0
     entrypoint: ["/usr/local/bin/morton_loadtest"]
     profiles: ["bench"]
     depends_on:
