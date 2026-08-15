@@ -43,6 +43,7 @@ public:
     void disconnect() { redis_.disconnect(); }
     bool connected() const { return redis_.connected(); }
     RedisClient& client() { return redis_; }
+    const std::string& prefix() const { return prefix_; }
 
     bool heartbeat_shard(const ShardInfo& shard, u32 ttl_ms);
     bool remove_shard(const std::string& shard_id);
